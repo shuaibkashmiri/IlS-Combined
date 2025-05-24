@@ -128,7 +128,7 @@ const RazorpayCard = ({ amount, courseId, onSuccess }) => {
         // Force a small delay before navigation
         setTimeout(() => {
           router.push("/banglore/dashboard");
-          toast.success("Payment successful!");
+          toast.success("Paym ent successful!");
         }, 1000);
       } else {
         throw new Error("Payment verification failed");

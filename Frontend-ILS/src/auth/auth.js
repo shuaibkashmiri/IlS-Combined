@@ -6,8 +6,7 @@ import axios from "axios";
 import { useEffect } from "react";
 
 const Authorized = () => {
-  const url = "http://localhost:8080/api/auth/user-auth";
-  // const url = "https://ils-project.onrender.com/api/auth/user-auth";
+const url = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/user-auth`;
   const router = useRouter();
 
   const checkAuth = async () => {
