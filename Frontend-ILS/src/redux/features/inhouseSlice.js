@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080/api/offline-course";
-
+const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/offline-course`;
 // Fetch all offline courses
 export const fetchOfflineCourses = createAsyncThunk(
   "inhouse/fetchOfflineCourses",

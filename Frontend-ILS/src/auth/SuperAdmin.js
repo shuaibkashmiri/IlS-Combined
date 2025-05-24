@@ -5,9 +5,7 @@ import { useRouter } from "next/navigation";
 
 const IsSuperAdmin = () => {
   const router = useRouter();
-  const url = "http://localhost:8080/api/auth/superadmin-auth";
-  // const url = "https://ils-project.onrender.com/api/auth/admin-auth";
-
+const url = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/superadmin-auth`;
   const checkSuperAdmin = async () => {
     try {
       const res = await axios.get(url, {

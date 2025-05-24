@@ -8,8 +8,7 @@ import { useRouter } from "next/navigation";
 
 // Create axios instance with base URL
 const api = axios.create({
-  // baseURL: "https://ils-project.onrender.com",
-  baseURL: "http://localhost:8080",
+  baseURL: `${process.env.NEXT_PUBLIC_API_URL}`,
   withCredentials: true,
   timeout: 10000,
   headers: {

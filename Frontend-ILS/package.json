@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^2.7.0",
     "axios": "^1.9.0",
     "country-flag-icons": "^1.5.19",
+    "dotenv": "^16.5.0",
     "framer-motion": "^12.10.2",
     "geist": "^1.4.2",
     "js-cookie": "^3.0.5",

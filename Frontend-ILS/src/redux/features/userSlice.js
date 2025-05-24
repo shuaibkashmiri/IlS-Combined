@@ -1,22 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-const BASE_URL = "http://localhost:8080/api/auth";
-// const BASE_URL = "https://ils-project.onrender.com/api/auth";
 import Cookies from "js-cookie";
 
 const isBrowser = typeof window !== "undefined";
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 // Get All Users
 export const getAllUsers = createAsyncThunk(
   "user/getAllUsers",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/api/admin/getall`,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get(`${BASE_URL}/api/admin/getall`, {
+        withCredentials: true,
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -30,7 +26,7 @@ export const addOfflineStudent = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/admin/add-offline-student`,
+        `${BASE_URL}/api/admin/add-offline-student`,
         formData,
         {
           withCredentials: true,
@@ -48,7 +44,7 @@ export const registerUser = createAsyncThunk(
   "user/register",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BASE_URL}/register`, formData);
+      const response = await axios.post(`${BASE_URL}/api/auth/register`, formData);
       if (isBrowser)
         localStorage.setItem("user", JSON.stringify(response.data.user));
       return response.data;
@@ -68,7 +64,7 @@ export const loginUser = createAsyncThunk(
       }
 
       const response = await axios.post(
-        `${BASE_URL}/login`,
+        `${BASE_URL}/api/auth/login`,
         {
           email: formData.email,
           password: formData.password,
@@ -100,7 +96,7 @@ export const instructorLogin = createAsyncThunk(
       }
 
       const response = await axios.post(
-        `${BASE_URL}/instructor/login`,
+        `${BASE_URL}/api/instructor/login`,
         {
           email: formData.email,
           password: formData.password,
@@ -149,7 +145,7 @@ export const getUserDetails = createAsyncThunk(
   "user/details",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${BASE_URL}/userdetails`, {
+      const response = await axios.get(`${BASE_URL}/api/auth/userdetails`, {
         withCredentials: true,
       });
 
@@ -182,7 +178,7 @@ export const initiateTeachingApplication = createAsyncThunk(
   "user/initiateTeachingApplication",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BASE_URL}/teach/initiate`, formData);
+      const response = await axios.post(`${BASE_URL}/api/teach/initiate`, formData);
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -198,7 +194,7 @@ export const verifyTeachingOTP = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${BASE_URL}/teach/verify-otp`,
+        `${BASE_URL}/api/teach/verify-otp`,
         formData
       );
       return response.data;
@@ -216,7 +212,7 @@ export const completeTeachingApplication = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${BASE_URL}/teach/complete`,
+        `${BASE_URL}/api/teach/complete`,
         formData,
         {
           headers: {
@@ -239,7 +235,7 @@ export const deleteUser = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/admin/user/delete/${userId}`,
+        `${BASE_URL}/api/admin/user/delete/${userId}`,
         {
           withCredentials: true,
         }
@@ -257,7 +253,7 @@ export const approveInstructor = createAsyncThunk(
   async ({ instructorId, reason }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/admin/instructor/approve/${instructorId}`,
+        `${BASE_URL}/api/admin/instructor/approve/${instructorId}`,
         { status: "approved", reason },
         { withCredentials: true }
       );
@@ -274,7 +270,7 @@ export const rejectInstructor = createAsyncThunk(
   async ({ instructorId, reason }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/admin/instructor/reject/${instructorId}`,
+        `${BASE_URL}/api/admin/instructor/reject/${instructorId}`,
         { status: "rejected", reason },
         { withCredentials: true }
       );

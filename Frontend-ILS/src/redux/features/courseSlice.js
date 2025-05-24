@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-const BASE_URL = "http://localhost:8080/api/course";
-// const BASE_URL = "https://ils-project.onrender.com/api/course";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const isBrowser = typeof window !== "undefined";
 
@@ -10,12 +9,9 @@ export const getAllCoursesforAdmin = createAsyncThunk(
   "course/getallforadmin",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/api/admin/getallforadmin`,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get(`${BASE_URL}/api/admin/getallforadmin`, {
+        withCredentials: true,
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -29,7 +25,7 @@ export const enrollOfflineStudentInCourse = createAsyncThunk(
   async ({ studentId, courseId }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/admin/enroll-offline-student-in-course/${studentId}/${courseId}`,
+        `${BASE_URL}/api/admin/enroll-offline-student-in-course/${studentId}/${courseId}`,
         {}, // Empty body, adjust if your API expects data
         {
           withCredentials: true,
@@ -89,7 +85,7 @@ export const getAllCourses = createAsyncThunk(
   "course/getall",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${BASE_URL}/getall`, {
+      const response = await axios.get(`${BASE_URL}/api/course/getall`, {
         withCredentials: true,
       });
       return response.data;
@@ -104,12 +100,9 @@ export const getSingle = createAsyncThunk(
   "course/getsingle",
   async (cid, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        `http://localhost:8080/api/get/${cid}`,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get(`${BASE_URL}/api/course/get/${cid}`, {
+        withCredentials: true,
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -122,7 +115,7 @@ export const getSingleCourse = createAsyncThunk(
   "courses/getSingle",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${BASE_URL}/get/${id}`);
+      const response = await axios.get(`${BASE_URL}/api/course/get/${id}`);
       // Store in sessionStorage
       if (isBrowser)
         sessionStorage.setItem("selectedCourse", JSON.stringify(response.data));
@@ -147,7 +140,7 @@ export const addVideo = createAsyncThunk(
   async (formData, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/video/add`,
+        `${BASE_URL}/api/video/add`,
         formData,
         {
           withCredentials: true,
@@ -176,7 +169,7 @@ export const approveCourse = createAsyncThunk(
   async ({ courseId, reason }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/admin/course/approve/${courseId}`,
+        `${BASE_URL}/api/admin/course/approve/${courseId}`,
         { status: "approved", reason },
         {
           withCredentials: true,
@@ -197,7 +190,7 @@ export const rejectCourse = createAsyncThunk(
   async ({ courseId, reason }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/admin/course/reject/${courseId}`,
+        `${BASE_URL}/api/admin/course/reject/${courseId}`,
         { status: "rejected", reason },
         {
           withCredentials: true,
@@ -218,7 +211,7 @@ export const approveVideo = createAsyncThunk(
   async ({ videoId, reason }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/admin/video/approve/${videoId}`,
+        `${BASE_URL}/api/admin/video/approve/${videoId}`,
         { status: "approved", reason },
         {
           withCredentials: true,
@@ -239,7 +232,7 @@ export const rejectVideo = createAsyncThunk(
   async ({ videoId, reason }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/admin/video/reject/${videoId}`,
+        `${BASE_URL}/api/admin/video/reject/${videoId}`,
         { status: "rejected", reason },
         {
           withCredentials: true,
@@ -260,7 +253,7 @@ export const deleteVideo = createAsyncThunk(
   async (videoId, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/video/delete/${videoId}`,
+        `${BASE_URL}/api/video/delete/${videoId}`,
         { withCredentials: true }
       );
       return response.data;
@@ -278,7 +271,7 @@ export const editVideo = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.patch(
-        `http://localhost:8080/api/video/edit/${formData.get("videoId")}`,
+        `${BASE_URL}/api/video/edit/${formData.get("videoId")}`,
         formData,
         {
           withCredentials: true,
@@ -302,7 +295,7 @@ export const editCourse = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.patch(
-        `http://localhost:8080/api/course/edit/${formData.get("courseId")}`,
+        `${BASE_URL}/api/course/edit/${formData.get("courseId")}`,
         formData,
         {
           withCredentials: true,
@@ -326,7 +319,7 @@ export const deleteCourse = createAsyncThunk(
   async (courseId, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/admin/course/delete/${courseId}`,
+        `${BASE_URL}/api/admin/course/delete/${courseId}`,
         { withCredentials: true }
       );
       return response.data;
