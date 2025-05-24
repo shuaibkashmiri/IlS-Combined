@@ -2,7 +2,9 @@
 import { useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
-export default function GoogleCallbackPage() {
+import { Suspense } from "react";
+
+function GoogleCallbackPageInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const success = searchParams.get("success");
@@ -30,5 +32,13 @@ export default function GoogleCallbackPage() {
       )}
       {!success && !error && <h2>Processing authentication...</h2>}
     </div>
+  );
+}
+
+export default function GoogleCallbackPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <GoogleCallbackPageInner />
+    </Suspense>
   );
 }
