@@ -1,0 +1,39 @@
+{
+  "name": "frontend-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@reduxjs/toolkit": "^2.7.0",
+    "axios": "^1.9.0",
+    "country-flag-icons": "^1.5.19",
+    "framer-motion": "^12.10.2",
+    "geist": "^1.4.2",
+    "js-cookie": "^3.0.5",
+    "next": "15.3.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.5.2",
+    "react-icons": "^5.5.0",
+    "react-progressbar": "^15.4.1",
+    "react-redux": "^9.2.0",
+    "react-slick": "^0.30.3",
+    "recharts": "^2.15.3",
+    "slick-carousel": "^1.8.1",
+    "sonner": "^2.0.3",
+    "swiper": "^11.2.6"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.1",
+    "tailwindcss": "^4"
+  }
+}
