@@ -14,6 +14,7 @@ const url = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/user-auth`;
       const res = await axios.get(url, {
         withCredentials: true,
       });
+      console.log(res.data);
       if (res.data.success === true) {
         return true;
       } else {
