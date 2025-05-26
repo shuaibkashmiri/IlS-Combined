@@ -13,21 +13,11 @@ export const metadata = {
   keywords: "education, learning, courses, online learning",
 };
 
-import { useEffect } from "react";
-const url = `${process.env.NEXT_PUBLIC_API_URL}`;
+import PingKeepAlive from "../components/PingKeepAlive";
 export default function Index() {
-  useEffect(() => {
-    // Ping the /ting endpoint every 10 minutes
-    const interval = setInterval(() => {
-      fetch(`${url}/ting`).catch(() => {}); // Ignore errors
-    }, 600000); // 600,000 ms = 10 minutes
-    // Initial ping on mount
-    fetch(`${url}/ting`).catch(() => {});
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
+      <PingKeepAlive />
       <DropDownForm />
       <HorizontalRule />
       <AboutUs />
