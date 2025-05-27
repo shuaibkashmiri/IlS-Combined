@@ -9,7 +9,7 @@ const VerifyEmail = ({ params }) => {
   const router = useRouter();
   const { token } = params;
 
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const verifyEmail = async () => {
