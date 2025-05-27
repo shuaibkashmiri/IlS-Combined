@@ -129,7 +129,7 @@ export const googleLogin = createAsyncThunk(
       // Instead of axios request, redirect to Google auth URL
       const baseUrl =
         process.env.NODE_ENV === "production"
-          ? "https://ils-project.onrender.com"
+          ? "https://ils-project-1.onrender.com"
           : "http://localhost:8080";
 
       window.location.href = `${baseUrl}/api/auth/google`;
