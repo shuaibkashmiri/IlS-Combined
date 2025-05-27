@@ -9,8 +9,7 @@ const VerifyEmail = ({ params }) => {
   const router = useRouter();
   const { token } = params;
 
-  // const BASE_URL = "https://ils-project.onrender.com";
-  const BASE_URL = "http://localhost:8080";
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   useEffect(() => {
     const verifyEmail = async () => {
