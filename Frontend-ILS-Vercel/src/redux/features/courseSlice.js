@@ -55,7 +55,7 @@ export const addCourse = createAsyncThunk(
         throw new Error("No thumbnail file found in form data");
       }
 
-      const response = await axios.post(`${BASE_URL}/create`, formData, {
+      const response = await axios.post(`${BASE_URL}/api/course/create`, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
