@@ -113,7 +113,7 @@ const DemoVideos = () => {
       toast.success("Payment successful! Enrolling you in the course...");
       // The enrollment is now handled in the payment verification
       // Just navigate to the dashboard
-      router.push(`/banglore/courses/${selectedCourse.course._id}`);
+      router.push(`/banglore/dashboard`);
       // Optionally refresh user data here if needed
       // You can dispatch an action to update the user's enrolled courses
     } catch (error) {
