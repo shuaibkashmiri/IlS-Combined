@@ -126,7 +126,7 @@ const RazorpayCard = ({ amount, courseId, onSuccess }) => {
         console.log("Navigating to:", `/banglore/courses/${courseId}`);
         // Force a small delay before navigation
         setTimeout(() => {
-          router.push("/banglore/dashboard");
+          router.push(`/banglore/courses/${courseId}`);
           toast.success("Payment successful!");
         }, 1000);
       } else {
