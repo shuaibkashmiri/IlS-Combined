@@ -22,6 +22,7 @@
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
+    "react-intersection-observer": "^9.16.0",
     "react-progressbar": "^15.4.1",
     "react-redux": "^9.2.0",
     "react-slick": "^0.30.3",

@@ -19,6 +19,7 @@ import {
   FaSignOutAlt,
   FaSearch,
   FaChevronRight,
+  FaGlobe,
 } from "react-icons/fa";
 import AuthModal from "./authModal";
 
@@ -175,138 +176,48 @@ const Navbar = () => {
 
           {/* navbar links */}
           <div className="hidden md:flex space-x-6 items-center">
-            {[
-              { name: "Home", path: "/banglore" },
-              { name: "About", path: "/banglore/about" },
-              { name: "Contact", path: "/banglore/contact" },
-              ...(user?.role === 'instructor' ? [{ name: "Instructor Panel", path: "/banglore/instructor" }] : []),
-            ].map((item) => (
-              <Link
-                key={item.name}
-                href={item.path}
-                className={`transition-colors py-2 ${
-                  pathname === item.path
-                    ? "text-[#164758] font-medium border-b-2 border-[#164758]"
-                    : "hover:text-[#164758]"
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-
-            {/* Courses Dropdown */}
-            <div
-              className="relative group"
-              onMouseEnter={() => setActiveDropdown("Courses")}
-              onMouseLeave={() => {
-                setActiveDropdown(null);
-                setActiveCategory(null);
-              }}
-            >
+            {/* Explore Dropdown */}
+            <div className="relative group ml-4">
               <button
-                onClick={() => {
-                  setActiveDropdown(
-                    activeDropdown === "Courses" ? null : "Courses"
-                  );
-                  setActiveCategory(null);
-                }}
-                className={`flex items-center space-x-1 transition-colors py-2 ${
-                  activeDropdown === "Courses"
-                    ? "text-[#164758] font-medium border-b-2 border-[#164758]"
-                    : "hover:text-[#164758]"
-                }`}
+                onClick={() => toggleDropdown("Explore")}
+                className={`flex items-center space-x-1 px-4 py-2 rounded transition-colors ${activeDropdown === "Explore" ? "text-[#164758] font-medium bg-gray-100" : "hover:text-[#164758]"}`}
               >
-                <span>Courses</span>
-                <FaChevronDown
-                  size={12}
-                  className={`transform transition-transform duration-200 ${
-                    activeDropdown === "Courses" ? "rotate-180" : ""
-                  }`}
-                />
+                <span>Explore</span>
+                <FaChevronDown size={12} className={`transform transition-transform duration-200 ${activeDropdown === "Explore" ? "rotate-180" : ""}`} />
               </button>
-              {activeDropdown === "Courses" && (
-                <div
-                  id="courses-dropdown"
-                  className="absolute left-0 bg-white border rounded-md shadow-md flex z-50"
-                  style={{ top: "calc(100% + 1px)" }}
-                >
-                  {/* Categories List */}
-                  <div className="w-48 border-r">
-                    {getCategories().map((category) => (
-                      <button
-                        key={category}
-                        onMouseEnter={() => setActiveCategory(category)}
-                        className={`block w-full px-4 py-2 text-left hover:bg-gray-100 ${
-                          activeCategory === category
-                            ? "bg-gray-100 text-[#164758]"
-                            : ""
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">
-                            {category}
-                          </span>
-                          <FaChevronRight className="text-gray-400" size={12} />
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Courses List */}
-                  {activeCategory && (
-                    <div
-                      className="w-64 max-h-[400px] overflow-y-auto"
-                      onMouseLeave={() => setActiveCategory(null)}
-                    >
-                      {getCoursesByCategory(activeCategory).map((course) => (
-                        <button
-                          key={course._id}
-                          onClick={() => handleCourseClick(course)}
-                          className="block w-full px-4 py-2 text-left hover:bg-gray-100 border-b last:border-b-0"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <img
-                              src={course.thumbnail}
-                              alt={course.title}
-                              className="w-8 h-8 object-cover rounded"
-                            />
-                            <div>
-                              <p className="font-medium text-sm">
-                                {course.title}
-                              </p>
-                            </div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
+              {activeDropdown === "Explore" && (
+                <div className="absolute left-0 mt-2 w-56 bg-white border rounded-md shadow-lg z-50">
+                  <Link href="/banglore/courses" className="block px-4 py-2 hover:bg-gray-100">All Courses</Link>
+                  <Link href="/banglore/courses/category/technology" className="block px-4 py-2 hover:bg-gray-100">Technology</Link>
+                  <Link href="/banglore/courses/category/business" className="block px-4 py-2 hover:bg-gray-100">Business</Link>
+                  <Link href="/banglore/courses/category/design" className="block px-4 py-2 hover:bg-gray-100">Design</Link>
                 </div>
               )}
             </div>
+            <Link href="/banglore/plans" className="px-4 py-2 rounded hover:text-[#164758]">Plans & Pricing</Link>
           </div>
 
-          <div className="flex items-center space-x-4">
-            {/* Replace Cart with Search Bar */}
-            <div className="relative hidden md:block">
-              <form onSubmit={handleSearch} className="flex items-center">
-                <div className="relative">
+          {/* Centered Search bar */}
+          <div className="flex-1 flex justify-center items-center">
+            <div className="relative w-full max-w-xl">
+              <form onSubmit={handleSearch} className="flex items-center w-full">
+                <div className="relative w-full">
                   <input
                     type="text"
-                    placeholder="Search courses..."
+                    placeholder="Find your next course by skill, topic, or instructor"
                     value={searchQuery}
                     onChange={handleSearchChange}
                     onBlur={() => {
                       setTimeout(() => setShowSearchResults(false), 200);
                     }}
                     onFocus={() => setShowSearchResults(true)}
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00965f] focus:border-transparent w-96 text-sm"
+                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#00965f] focus:border-transparent w-full text-sm bg-[#f7f9fa]"
                   />
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <FaSearch className="h-4 w-4 text-gray-400" />
                   </div>
                 </div>
               </form>
-
               {/* Search Results Dropdown */}
               {showSearchResults && (
                 <div className="absolute mt-2 w-full bg-white border rounded-md shadow-lg max-h-[70vh] overflow-y-auto z-50">
@@ -346,15 +257,28 @@ const Navbar = () => {
                 </div>
               )}
             </div>
+          </div>
 
-            {/* User Icon / Login & Logout */}
+          {/* Cart, Language, Login/Signup Buttons */}
+          <div className="flex items-center space-x-4">
+            {/* Language Icon */}
+            <button className="hidden md:flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100">
+              <FaGlobe className="text-xl text-gray-600" />
+            </button>
+            {/* Login/Signup Buttons */}
             {!user ? (
-              <div className="relative">
+              <div className="flex space-x-2">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="bg-[#00965f] text-white px-6 py-2 rounded-md font-medium hover:bg-[#164758] transition"
+                  className="px-6 py-2 rounded-md font-medium bg-[#00965f] text-white hover:bg-[#164758] transition"
                 >
-                  Login
+                  Log in
+                </button>
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="px-6 py-2 rounded-md font-medium bg-[#00965f] text-white hover:bg-[#164758] transition"
+                >
+                  Sign up
                 </button>
                 {showUserMenu && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border">
