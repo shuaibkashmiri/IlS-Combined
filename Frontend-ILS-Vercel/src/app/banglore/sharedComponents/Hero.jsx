@@ -467,7 +467,7 @@ export default function HeroSlider() {
   return (
     <>
       <section
-        className="relative w-full min-h-[60vh] flex flex-col md:flex-row items-center justify-items-normal bg-gradient-to-br from-[#164758] via-[#00965f] to-[#e0f7fa] overflow-hidden px-1 sm:px-2"
+        className="relative w-full min-h-[50vh] flex flex-col md:flex-row items-center justify-items-normal bg-gradient-to-br from-[#164758] via-[#00965f] to-[#e0f7fa] overflow-hidden px-1 sm:px-2"
         onMouseMove={handleMouseMove}
       >
         {/* Floating icons with parallax */}
