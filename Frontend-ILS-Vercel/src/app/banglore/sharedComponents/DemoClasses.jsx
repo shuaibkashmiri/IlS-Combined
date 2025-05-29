@@ -350,109 +350,100 @@ export default function DemoClassesGrid() {
   return (
     <>
       <div className="w-full pb-8 sm:pb-12 bg-gray-100">
-        <div className="flex w-full flex-col mt-0 bg-gray/10 backdrop-blur-md bg-gradient-to-t from-gray/80 to-gray/1 shadow-md py-3 px-4 justify-center items-center rounded-md">
-          <div className="flex w-full flex-col lg:flex-row">
-            <div className="flex flex-col justify-start items-start w-full lg:w-1/2">
-              <div className="px-2 md:px-4">
-                <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mb-1 sm:mb-2 mt-3 sm:mt-5 lg:mt-10 text-left">
-                  Master the Skills{" "}
-                  <span className="text-[#00965f]">That Matter!</span>
-                </h2>
-                <p className="text-sm sm:text-md lg:text-lg font-medium text-gray-600 mb-4 sm:mb-6 lg:mb-8 text-left">
-                  From basic beginner training to advanced technical expertise,
-                  we've got you covered.
-                </p>
-              </div>
+        <div className="flex w-full flex-col mt-0 bg-white/80 shadow-lg py-4 px-4 justify-center items-center rounded-md border border-gray-200">
+          <div className="relative w-full px-2 md:px-4">
+            <style>{`
+              .category-slider .slick-track {
+                display: flex !important;
+                gap: 0.75rem;
+                margin-left: 0 !important;
+              }
+              .category-slider .slick-slide {
+                height: auto;
+                opacity: 1 !important;
+                width: auto !important;
+              }
+              .category-slider .slick-slide > div {
+                height: 100%;
+              }
+              .category-slider .slick-arrow {
+                background: #fff !important;
+                border-radius: 9999px !important;
+                box-shadow: 0 2px 8px 0 rgba(0,0,0,0.07);
+                border: 1px solid #e5e7eb !important;
+                width: 32px !important;
+                height: 32px !important;
+                z-index: 20;
+                transition: background 0.2s, box-shadow 0.2s;
+              }
+              .category-slider .slick-arrow:hover {
+                background: #00965f !important;
+                color: #fff !important;
+                box-shadow: 0 4px 16px 0 rgba(0,150,95,0.10);
+              }
+            `}</style>
+            {(() => {
+              const uniqueCategories = [
+                "All",
+                ...new Set(courses.map((course) => course.category)),
+              ];
+              const isMobile = typeof window !== 'undefined' ? window.innerWidth < 640 : false;
+              const shouldUseSlider =
+                isMobile || uniqueCategories.length > 6;
 
-              <div className="relative w-full px-2 md:px-4">
-                {(() => {
-                  const uniqueCategories = [
-                    "All",
-                    ...new Set(courses.map((course) => course.category)),
-                  ];
-                  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 640 : false;
-                  const shouldUseSlider =
-                    isMobile || uniqueCategories.length > 6;
+              const buttonBase =
+                "transition-all duration-200 px-5 py-2 text-sm sm:text-base font-semibold rounded-full whitespace-nowrap shadow-sm border border-transparent focus:outline-none focus:ring-2 focus:ring-[#00965f]/40";
+              const selectedButton =
+                "bg-[#00965f] text-white shadow-lg scale-105 border-[#00965f]";
+              const unselectedButton =
+                "bg-white text-gray-800 hover:bg-[#e6f7f1] hover:text-[#00965f] hover:scale-105";
 
-                  if (shouldUseSlider) {
-                    return (
-                      <Slider
-                        {...categorySliderSettings}
-                        className="category-slider"
-                      >
-                        {uniqueCategories.map((category) => (
-                          <div key={category} className="!w-auto">
-                            <button
-                              onClick={() => handleCategoryClick(category)}
-                              className={`relative transition duration-300 px-3 py-1 text-xs sm:text-sm lg:text-lg font-medium rounded-full whitespace-nowrap ${
-                                category === "All"
-                                  ? selectedCategory === "All"
-                                    ? "text-[#00965f] font-bold"
-                                    : "text-gray-800 hover:text-[#00965f]"
-                                  : selectedCategory === category
-                                  ? "bg-[#164758] text-white"
-                                  : "bg-transparent text-gray-800 hover:text-[#00965f]"
-                              }`}
-                            >
-                              {category}
-                            </button>
-                          </div>
-                        ))}
-                      </Slider>
-                    );
-                  }
-
-                  return (
-                    <div className="flex flex-nowrap gap-2 overflow-x-hidden">
-                      {uniqueCategories.map((category) => (
+              if (shouldUseSlider) {
+                return (
+                  <Slider
+                    {...categorySliderSettings}
+                    className="category-slider"
+                  >
+                    {uniqueCategories.map((category) => (
+                      <div key={category} className="!w-auto">
                         <button
-                          key={category}
                           onClick={() => handleCategoryClick(category)}
-                          className={`relative transition duration-300 px-3 py-1 text-xs sm:text-sm lg:text-lg font-medium rounded-full whitespace-nowrap ${
-                            category === "All"
-                              ? selectedCategory === "All"
-                                ? "text-[#00965f] font-bold"
-                                : "text-gray-800 hover:text-[#00965f]"
-                              : selectedCategory === category
-                              ? "bg-[#164758] text-white"
-                              : "bg-transparent text-gray-800 hover:text-[#00965f]"
-                          }`}
+                          className={
+                            buttonBase +
+                            " " +
+                            (selectedCategory === category
+                              ? selectedButton
+                              : unselectedButton)
+                          }
                         >
                           {category}
                         </button>
-                      ))}
-                    </div>
-                  );
-                })()}
-              </div>
-            </div>
+                      </div>
+                    ))}
+                  </Slider>
+                );
+              }
 
-            <div className="hidden lg:flex flex-row items-center ml-auto">
-              <div className="flex flex-col items-center justify-center">
-                <div className="flex flex-row gap-2 mb-6 mt-6">
-                  <Counter end={10000} type="students" />
-                  <Counter end={200} type="trainers" />
+              return (
+                <div className="flex flex-nowrap gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-[#00965f]/30 scrollbar-track-transparent py-1">
+                  {uniqueCategories.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => handleCategoryClick(category)}
+                      className={
+                        buttonBase +
+                        " " +
+                        (selectedCategory === category
+                          ? selectedButton
+                          : unselectedButton)
+                      }
+                    >
+                      {category}
+                    </button>
+                  ))}
                 </div>
-
-                <p className="text-md font-md text-gray-700 mb-4 text-center">
-                  Need more support? We're here for you!
-                </p>
-                <button
-                  onClick={() => router.push("/banglore/contact")}
-                  className="bg-[#00965f] flex flex-row text-white px-6 py-2 rounded-md font-medium hover:bg-[#164758] transition"
-                >
-                  <span className="px-2">Contact Us</span>{" "}
-                  <span className="mt-0.5">
-                    <FaPhone />
-                  </span>
-                </button>
-              </div>
-              <img
-                src={boyImg.src}
-                alt="support"
-                className="h-40 lg:h-50 w-auto object-contain self-end"
-              />
-            </div>
+              );
+            })()}
           </div>
         </div>
 
