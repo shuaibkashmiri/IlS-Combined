@@ -53,11 +53,10 @@ const courseSlides = [
     title: "Digital Marketing",
     description: "Learn SEO, social media marketing, and content strategy",
     image:
-      "https://www.berlinsbi.com/uploads/sites/2/2021/12/5-ways-msc-digital-marketing-will-advance-your-career.jpg",
+      "https://onlineinfatuation.com/wp-content/uploads/2024/06/Digital-Marketing-services-1.png",
     duration: "1 months",
     level: "All Levels",
   },
-
   {
     title: "UI/UX Design",
     description: "Create beautiful user interfaces and experiences",
@@ -74,6 +73,75 @@ const countryFlags = {
   India: IN,
 };
 
+const features = [
+  {
+    icon: (
+      <svg
+        className="w-10 h-10 text-[#00965f]"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+      >
+        <path d="M12 20l9-5-9-5-9 5 9 5z" />
+        <path d="M12 12V4l9 5-9 5-9-5 9-5z" />
+      </svg>
+    ),
+    title: "AI-Powered Learning",
+    desc: "Personalized content and smart recommendations.",
+  },
+  {
+    icon: (
+      <svg
+        className="w-10 h-10 text-[#164758]"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 6v6l4 2" />
+      </svg>
+    ),
+    title: "24/7 Support",
+    desc: "Always here to help you succeed.",
+  },
+  {
+    icon: (
+      <svg
+        className="w-10 h-10 text-[#00965f]"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+      >
+        <path d="M17 20h5v-2a4 4 0 0 0-3-3.87" />
+        <path d="M9 20H4v-2a4 4 0 0 1 3-3.87" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    ),
+    title: "Global Community",
+    desc: "Connect and collaborate with peers worldwide.",
+  },
+  {
+    icon: (
+      <svg
+        className="w-10 h-10 text-[#164758]"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+      >
+        <rect x="2" y="7" width="20" height="14" rx="2" />
+        <path d="M16 3v4" />
+        <path d="M8 3v4" />
+      </svg>
+    ),
+    title: "Flexible Schedules",
+    desc: "Learn at your own pace, anytime.",
+  },
+];
+
 const DropdownForm = () => {
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
@@ -86,6 +154,8 @@ const DropdownForm = () => {
   const [activeSelection, setActiveSelection] = useState(null);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [activeLink, setActiveLink] = useState("Home");
 
   // Minimum swipe distance (in px) to trigger slide change
   const minSwipeDistance = 50;
@@ -112,8 +182,9 @@ const DropdownForm = () => {
       });
       return;
     }
+    // Close modal before navigating
+    setIsLocationModalOpen(false);
 
-    // Handle navigation based on selected state
     if (state === "Srinagar") {
       window.location.href = siteUrls.Srinagar;
     } else if (state === "Bangalore") {
@@ -131,32 +202,15 @@ const DropdownForm = () => {
     }
   };
 
-  const handleNavClick = (
-    e,
-    isAbout = false,
-    isContact = false,
-    isHome = false
-  ) => {
-    if (isContact) {
-      e.preventDefault();
-      const footer = document.querySelector("footer");
+  const handleNavClick = (item) => {
+    setActiveLink(item);
+    setIsMenuOpen(false);
+
+    if (item === "Contact") {
+      const footer = document.querySelector("footer"); // Assuming your footer has a <footer> tag or a specific class/id
       if (footer) {
         footer.scrollIntoView({ behavior: "smooth" });
       }
-    } else if (isHome) {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else if (!isAbout) {
-      e.preventDefault();
-      toast.error("Please submit your location before accessing the courses", {
-        duration: 3000,
-        position: "top-right",
-        style: {
-          background: "#FEE2E2",
-          color: "#991B1B",
-          border: "1px solid #F87171",
-        },
-      });
     }
   };
 
@@ -204,533 +258,366 @@ const DropdownForm = () => {
   }, [isPaused]);
 
   return (
-    <div className="min-h-screen w-full">
-      {/* Contact Bar - Hidden on mobile */}
-      <div className="bg-[#164758] text-white py-1.5 hidden md:block fixed w-full top-0 z-50">
-        <div className="container mx-auto px-4 flex justify-between items-center text-sm ">
-          <div className="flex items-center space-x-4">
-            <a
-              href="mailto:info@ils.com"
-              className="flex items-center hover:text-gray-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
-              info@ils.com
-            </a>
-            <a
-              href="tel:+1234567890"
-              className="flex items-center hover:text-gray-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                />
-              </svg>
-              +1 234 567 890
-            </a>
+    <div className="min-h-screen w-full bg-gray-50 flex flex-col items-center">
+      {/* Modern Navbar (Content of original, design of image) */}
+      <nav className="fixed top-0 left-0 w-full z-50 bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 flex justify-between items-center h-14">
+          {/* Logo/Brand */}
+          <div className="flex items-center gap-2">
+            <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
           </div>
-          <div className="flex items-center space-x-4">
-            <a href="#" className="hover:text-gray-200">
-              Follow Us
-            </a>
-            <div className="flex items-center space-x-2">
-              <a href="#" className="hover:text-gray-200">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
+
+          {/* Desktop Navigation Links */}
+          <ul className="hidden md:flex items-center space-x-6 text-gray-700">
+            {["Home", "About Us", "Contact"].map((item) => (
+              <li key={item} className="text-sm font-medium">
+                <a
+                  href={
+                    item === "Home"
+                      ? "#"
+                      : `#${item.replace(/\s+/g, "").toLowerCase()}`
+                  }
+                  className={`transition-colors duration-200 ${
+                    activeLink === item
+                      ? "bg-[#00965f] text-white px-4 py-1.5 rounded-md"
+                      : "hover:text-[#00965f]"
+                  }`}
+                  onClick={() => handleNavClick(item)}
                 >
-                  <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
-                </svg>
-              </a>
-              <a href="#" className="hover:text-gray-200">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
+                  {item}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden text-xl text-[#164758]"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            <span>{isMenuOpen ? "✕" : "☰"}</span>
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        <div
+          className={`md:hidden absolute top-14 left-0 w-full bg-white shadow-lg transition-all duration-300 ${
+            isMenuOpen
+              ? "max-h-screen opacity-100 visible"
+              : "max-h-0 opacity-0 invisible overflow-hidden"
+          }`}
+        >
+          <ul className="flex flex-col items-center space-y-3 text-sm font-medium text-gray-700 py-3">
+            {["Home", "About Us", "Contact"].map((item) => (
+              <li key={item}>
+                <a
+                  href={
+                    item === "Home"
+                      ? "#"
+                      : `#${item.replace(/\s+/g, "").toLowerCase()}`
+                  }
+                  className={`transition-colors duration-200 w-full text-center py-2 ${
+                    activeLink === item
+                      ? "bg-[#00965f] text-white rounded-md"
+                      : "hover:text-[#00965f]"
+                  }`}
+                  onClick={() => handleNavClick(item)}
                 >
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-              </a>
-              <a href="#" className="hover:text-gray-200">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
+                  {item}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </nav>
+      <div className="h-14 w-full" />
+
+      {/* Hero Section (Inspired by image) */}
+      <div className="relative w-full max-w-7xl mx-auto  px-4 flex flex-col md:flex-row items-center gap-12">
+        {/* Left Side (Illustration and Shape) */}
+        <div className="flex-1 flex justify-center md:justify-start items-center relative">
+          {/* Curved Shape */}
+          {/* <div className="relative w-80 h-80 md:w-[600px] md:h-[500px] bg-white rounded-tl-[80px] rounded-br-[80px] rounded-tr-md shadow-lg">
+          
+          </div> */}
+          {/* Illustration Image positioned on the shape */}
+          <img
+            src="/hero-image.png"
+            alt="Illustration"
+            className=" w-80 pt-0 mt-0 h-72 md:w-full md:h-[600px] "
+          />
+        </div>
+        {/* Right Side (Headline, Buttons, and Courses Grid) */}
+        <div className="flex-1 flex flex-col">
+          {/* Headline and Buttons */}
+          <div className="text-center md:text-left  mb-2">
+            <div className="text-[#00965f] w-fit p-1 rounded-lg text-xs bg-gray-300 font-semibold mb-2">
+              Online Education
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-[#164758] mb-4 leading-tight">
+              Revolutionizing Education With <br className="hidden md:inline" />
+              <span className="text-[#00965f]">AI Powered </span>
+              Solutions
+            </h1>
+            <p className="text-gray-600 mb-6">
+              At ILS Imperia, we understand that every student is unique and so
+              are their learning needs. Our mission is to match students with
+              experienced and caring home tutors who will provide personalized
+              support, inspire confidence and ignite a passion for learning.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+              <button
+                onClick={() => setIsLocationModalOpen(true)}
+                className="bg-[#00965f] text-white px-6 py-2 h-12 rounded-lg font-bold shadow-md hover:bg-[#0e7249] transition-colors duration-200 text-md flex items-center justify-center"
+              >
+                GET STARTED
+                <span className="ml-2 text-xl pb-1">»</span>
+              </button>
+              <button
+                onClick={() => setIsLocationModalOpen(true)}
+                className="bg-transparent h-12 text-gray-700 border-2 border-gray-300 px-8 py-2 rounded-md font-bold hover:bg-gray-100 transition-colors duration-200 text-lg flex items-center justify-center"
+              >
+                Explore Courses
+                <span className="ml-2 text-xl">»</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Courses Grid */}
+          <div className="mt-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg md:text-xl font-bold text-[#164758] text-center md:text-left">
+                Our Popular Courses
+              </h2>
+              <button
+                onClick={() => setIsLocationModalOpen(true)}
+                className="text-[#00965f] text-sm font-semibold hover:text-[#0e7249] transition-colors duration-200 flex items-center gap-1"
+              >
+                See All
+                <span className="text-xl">»</span>
+              </button>
+            </div>
+            <div className="flex gap-2 items-center">
+              {courseSlides.map((course, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => setIsLocationModalOpen(true)}
+                  className="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-2 flex flex-col group hover:scale-105 cursor-pointer w-[140px]"
                 >
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                </svg>
-              </a>
+                  <div className="w-full h-18 rounded-md overflow-hidden mb-1.5">
+                    <img
+                      src={course.image}
+                      alt={course.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <h3 className="text-xs font-semibold text-[#164758] mb-1 text-center">
+                    {course.title}
+                  </h3>
+                  <div className="flex justify-center gap-1 text-[9px]">
+                    <span className="bg-gray-200 text-gray-700 px-1 py-0.5 rounded-full font-semibold">
+                      {course.duration}
+                    </span>
+                    <span className="bg-gray-200 text-gray-700 px-1 py-0.5 rounded-full font-semibold">
+                      {course.level}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Navbar - Added solid white background */}
-      <nav className="bg-gradient-to-b from-gray-50 to-white fixed w-full z-40 top-0 md:top-[32px] mb-0">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center h-14">
-            <div className="flex items-center">
-              <img
-                src="/logo.png"
-                alt="Logo"
-                className="h-10 w-auto cursor-pointer"
-                onClick={(e) => handleNavClick(e, false, false, true)}
-              />
-            </div>
-            <ul className="hidden md:flex space-x-8 text-sm font-medium text-gray-700">
-              <li className="hover:text-[#00965f] cursor-pointer">
-                <a
-                  href="#"
-                  onClick={(e) => handleNavClick(e, false, false, true)}
-                >
-                  Home
-                </a>
-              </li>
-              <li className="hover:text-[#00965f] cursor-pointer">
-                <a href="#" onClick={(e) => handleNavClick(e)}>
-                  Courses
-                </a>
-              </li>
-              <li className="hover:text-[#00965f] cursor-pointer">
-                <a href="#about" onClick={(e) => handleNavClick(e, true)}>
-                  About Us
-                </a>
-              </li>
-              <li className="hover:text-[#00965f] cursor-pointer">
-                <a
-                  href="#footer"
-                  onClick={(e) => handleNavClick(e, false, true)}
-                >
-                  Contact
-                </a>
-              </li>
-            </ul>
-            <button
-              className="md:hidden text-xl"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              ☰
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Mobile menu - Added solid white background */}
-      {isMenuOpen && (
-        <ul
-          className={`md:hidden flex flex-col items-center space-y-4 text-sm font-medium text-gray-700 bg-white py-4 shadow-md fixed w-full z-30 top-14 ${
-            isMenuOpen ? "block" : "hidden"
-          }`}
+      {/* Location Selection Modal */}
+      {isLocationModalOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-md bg-opacity-50 "
+          onClick={() => setIsLocationModalOpen(false)}
         >
-          <li className="hover:text-[#00965f] cursor-pointer">
-            <a href="#" onClick={(e) => handleNavClick(e, false, false, true)}>
-              Home
-            </a>
-          </li>
-          <li className="hover:text-[#00965f] cursor-pointer">
-            <a href="#" onClick={(e) => handleNavClick(e)}>
-              Courses
-            </a>
-          </li>
-          <li className="hover:text-[#00965f] cursor-pointer">
-            <a href="#about" onClick={(e) => handleNavClick(e, true)}>
-              About Us
-            </a>
-          </li>
-          <li className="hover:text-[#00965f] cursor-pointer">
-            <a href="#footer" onClick={(e) => handleNavClick(e, false, true)}>
-              Contact
-            </a>
-          </li>
-        </ul>
-      )}
-
-      {/* Hero section - Adjusted margins to remove extra space */}
-      <div className="flex flex-col md:flex-row items-start justify-between px-8 md:px-12 lg:px-16 py-2 space-y-6 md:space-y-0 min-h-screen md:h-auto md:pt-36 lg:pt-24 pt-20 relative mb-8 mt-0">
-        {/* Left content */}
-        <div className="flex flex-col space-y-6 md:w-1/2">
-          <h1 className="text-4xl md:text-2xl leading-none">
-            <span className="text-[#164758] text-6xl">R</span>
-            <span className="text-[#164758]">
-              evolutionizing Education With
-            </span>{" "}
-            <span className="text-[#00965f] font-bold"> AI Powered </span>
-            <span className="text-[#164758]">Solutions</span>
-          </h1>
-          <h2 className="text-lg md:text-2xl leading-none -mt-4 font-bold text-[#0e7249] md:pl-10">
-            <span className="text-[#164758] text-xl">
-              Turning Knowledge Into{" "}
-              <span className="text-[#0e7249] text-xl">Career</span> Success
-            </span>
-          </h2>
-          <div className="bg-white-0 backdrop-blur-md rounded-3xl p-6 md:p-8 w-full max-w-md">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <h3 className="text-lg text-[#164758] mb-4 flex items-center gap-2">
-                <IoGlobeOutline className="text-2xl text-[#00965f] animate-spin-slow" />
-                Select Your Location
-              </h3>
-
+          <div
+            className="bg-white rounded-lg shadow-xl p-8 w-full max-w-sm relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl"
+              onClick={() => setIsLocationModalOpen(false)}
+            >
+              ✕
+            </button>
+            <h3 className="text-xl font-bold text-[#164758] mb-6 text-center flex items-center gap-2 justify-center">
+              <IoGlobeOutline className="text-2xl text-[#00965f] animate-spin-slow" />
+              Select Your Location
+            </h3>
+            <form onSubmit={handleSubmit} className="w-full space-y-6">
+              {/* Country Dropdown */}
               <div className="relative">
-                {/* Location Selection Cards */}
-                <div className="grid gap-4">
-                  {/* Country Card */}
-                  <div
-                    onClick={() => {
-                      setActiveSelection("country");
-                      setIsCountryOpen(!isCountryOpen);
-                      setIsStateOpen(false);
-                    }}
-                    className={`relative overflow-visible group cursor-pointer transform transition-all duration-300 z-[110] ${
-                      activeSelection === "country"
-                        ? "scale-105"
-                        : "hover:scale-102"
-                    }`}
-                  >
-                    <div
-                      className={`
-                      p-3 rounded-xl border-2 
-                      ${
+                <label className="block text-sm font-semibold text-[#164758] mb-1">
+                  Country
+                </label>
+                <div
+                  onClick={() => {
+                    setActiveSelection("country");
+                    setIsCountryOpen(!isCountryOpen);
+                    setIsStateOpen(false);
+                  }}
+                  className={`flex items-center justify-between p-3 rounded-md border border-gray-300 cursor-pointer transition-colors duration-200 ${
+                    country ? "border-[#00965f]" : ""
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`w-6 h-6 rounded-full flex items-center justify-center ${
                         country
-                          ? "border-[#00965f] bg-[#00965f]/5"
-                          : "border-gray-200 bg-white"
-                      } 
-                      transition-all duration-300
-                    `}
+                          ? "bg-[#00965f] text-white"
+                          : "bg-gray-200 text-gray-600"
+                      } transition-all duration-300`}
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div
-                            className={`
-                            w-8 h-8 rounded-full flex items-center justify-center
-                            ${
-                              country
-                                ? "bg-[#00965f] text-white"
-                                : "bg-gray-100 text-gray-400"
-                            }
-                            transition-all duration-300
-                          `}
-                          >
-                            {country && countryFlags[country] ? (
-                              <div className="w-5 h-4 rounded-sm overflow-hidden">
-                                {React.createElement(countryFlags[country])}
-                              </div>
-                            ) : (
-                              <FaMapMarkerAlt className="text-lg" />
-                            )}
-                          </div>
-                          <div>
-                            <p className="text-xs font-bold text-gray-600">
-                              Country
-                            </p>
-                            <p
-                              className={`font-medium text-sm ${
-                                country ? "text-[#00965f]" : "text-gray-400"
-                              }`}
-                            >
-                              {country || "Select Country"}
-                            </p>
-                          </div>
-                        </div>
-                        <MdKeyboardArrowDown
-                          className={`
-                          text-xl transition-transform duration-300
-                          ${
-                            isCountryOpen
-                              ? "rotate-180 text-[#00965f]"
-                              : "text-gray-400"
-                          }
-                        `}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Dropdown Panel */}
-                    {isCountryOpen && (
-                      <>
-                        <div
-                          className="fixed inset-0 bg-black/20 z-[115]"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setIsCountryOpen(false);
-                          }}
-                        />
-                        <div className="absolute z-[120] left-0 right-0 w-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 animate-slideDown">
-                          <div className="p-2 max-h-48 overflow-y-auto">
-                            {Object.keys(countryStateData).map((c) => {
-                              const FlagComponent = countryFlags[c];
-                              return (
-                                <div
-                                  key={c}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setCountry(c);
-                                    setState("");
-                                    setIsCountryOpen(false);
-                                    setActiveSelection("state");
-                                  }}
-                                  className={`
-                                    p-3 rounded-lg flex items-center gap-3 cursor-pointer
-                                    ${
-                                      country === c
-                                        ? "bg-[#00965f] text-white"
-                                        : "hover:bg-gray-50"
-                                    }
-                                    transition-colors duration-200
-                                  `}
-                                >
-                                  {FlagComponent && (
-                                    <div className="w-6 h-4 rounded-sm overflow-hidden">
-                                      <FlagComponent />
-                                    </div>
-                                  )}
-                                  <span>{c}</span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </>
-                    )}
+                      {country && countryFlags[country] ? (
+                        <span className="w-4 h-3 rounded-sm overflow-hidden">
+                          {React.createElement(countryFlags[country])}
+                        </span>
+                      ) : (
+                        <FaMapMarkerAlt className="text-sm" />
+                      )}
+                    </span>
+                    <span
+                      className={`font-medium text-sm ${
+                        country ? "text-[#164758]" : "text-gray-500"
+                      }`}
+                    >
+                      {country || "Select Country"}
+                    </span>
                   </div>
-
-                  {/* State Card */}
-                  <div
-                    onClick={() => {
-                      if (country) {
-                        setActiveSelection("state");
-                        setIsStateOpen(!isStateOpen);
-                        setIsCountryOpen(false);
-                      }
-                    }}
-                    className={`relative overflow-visible transition-all duration-300 z-[100] ${
-                      !country ? "opacity-50" : "group cursor-pointer"
-                    } ${
-                      activeSelection === "state"
-                        ? "scale-105"
-                        : "hover:scale-102"
+                  <MdKeyboardArrowDown
+                    className={`text-xl transition-transform duration-300 ${
+                      isCountryOpen
+                        ? "rotate-180 text-[#00965f]"
+                        : "text-gray-400"
                     }`}
-                  >
-                    <div
-                      className={`
-                      p-3 rounded-xl border-2
-                      ${
-                        state
-                          ? "border-[#00965f] bg-[#00965f]/5"
-                          : "border-gray-200 bg-white"
-                      }
-                      transition-all duration-300
-                    `}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                  />
+                </div>
+                {/* Dropdown Panel */}
+                {isCountryOpen && (
+                  <div className="absolute z-10 left-0 right-0 w-full mt-2 bg-white rounded-md shadow-lg border border-gray-200 animate-slideDown">
+                    <div className="p-1 max-h-40 overflow-y-auto">
+                      {Object.keys(countryStateData).map((c) => {
+                        const FlagComponent = countryFlags[c];
+                        return (
                           <div
-                            className={`
-                            w-8 h-8 rounded-full flex items-center justify-center
-                            ${
-                              state
+                            key={c}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setCountry(c);
+                              setState("");
+                              setIsCountryOpen(false);
+                              setActiveSelection("state");
+                            }}
+                            className={`p-2 rounded-md flex items-center gap-2 cursor-pointer ${
+                              country === c
                                 ? "bg-[#00965f] text-white"
-                                : "bg-gray-100 text-gray-400"
-                            }
-                            transition-all duration-300
-                          `}
+                                : "hover:bg-gray-100"
+                            } transition-colors duration-200`}
                           >
-                            <IoLocationOutline className="text-lg" />
+                            {FlagComponent && (
+                              <span className="w-5 h-3 rounded-sm overflow-hidden">
+                                {React.createElement(FlagComponent)}
+                              </span>
+                            )}
+                            <span>{c}</span>
                           </div>
-                          <div>
-                            <p className="text-xs font-bold text-gray-600">
-                              State
-                            </p>
-                            <p
-                              className={`font-medium text-sm ${
-                                state ? "text-[#00965f]" : "text-gray-400"
-                              }`}
-                            >
-                              {state || "Select State"}
-                            </p>
-                          </div>
-                        </div>
-                        <MdKeyboardArrowDown
-                          className={`
-                          text-xl transition-transform duration-300
-                          ${
-                            isStateOpen
-                              ? "rotate-180 text-[#00965f]"
-                              : "text-gray-400"
-                          }
-                        `}
-                        />
-                      </div>
+                        );
+                      })}
                     </div>
-
-                    {/* State Dropdown Panel */}
-                    {isStateOpen && country && (
-                      <>
+                  </div>
+                )}
+              </div>
+              {/* State Dropdown */}
+              <div className="relative">
+                <label className="block text-sm font-semibold text-[#164758] mb-1">
+                  State
+                </label>
+                <div
+                  onClick={() => {
+                    if (country) {
+                      setActiveSelection("state");
+                      setIsStateOpen(!isStateOpen);
+                      setIsCountryOpen(false);
+                    }
+                  }}
+                  className={`flex items-center justify-between p-3 rounded-md border border-gray-300 transition-colors duration-200 ${
+                    state ? "border-[#00965f]" : ""
+                  } ${
+                    !country
+                      ? "opacity-50 cursor-not-allowed"
+                      : "cursor-pointer"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                        state
+                          ? "bg-[#00965f] text-white"
+                          : "bg-gray-200 text-gray-600"
+                      } transition-all duration-300`}
+                    >
+                      <IoLocationOutline className="text-sm" />
+                    </span>
+                    <span
+                      className={`font-medium text-sm ${
+                        state ? "text-[#164758]" : "text-gray-500"
+                      }`}
+                    >
+                      {state || "Select State"}
+                    </span>
+                  </div>
+                  <MdKeyboardArrowDown
+                    className={`text-xl transition-transform duration-300 ${
+                      isStateOpen
+                        ? "rotate-180 text-[#00965f]"
+                        : "text-gray-400"
+                    }`}
+                  />
+                </div>
+                {/* State Dropdown Panel */}
+                {isStateOpen && country && (
+                  <div className="absolute z-10 left-0 right-0 w-full mt-2 bg-white rounded-md shadow-lg border border-gray-200 animate-slideDown">
+                    <div className="p-1 max-h-40 overflow-y-auto">
+                      {states.map((s) => (
                         <div
-                          className="fixed inset-0 bg-black/20 z-[105]"
+                          key={s}
                           onClick={(e) => {
                             e.stopPropagation();
+                            setState(s);
                             setIsStateOpen(false);
                           }}
-                        />
-                        <div className="absolute z-[110] left-0 right-0 w-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 animate-slideDown">
-                          <div className="p-2 max-h-48 overflow-y-auto">
-                            {states.map((s) => (
-                              <div
-                                key={s}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setState(s);
-                                  setIsStateOpen(false);
-                                }}
-                                className={`
-                                  p-3 rounded-lg flex items-center gap-3 cursor-pointer
-                                  ${
-                                    state === s
-                                      ? "bg-[#00965f] text-white"
-                                      : "hover:bg-gray-50"
-                                  }
-                                  transition-colors duration-200
-                                `}
-                              >
-                                <IoLocationOutline className="text-lg" />
-                                {s}
-                              </div>
-                            ))}
-                          </div>
+                          className={`p-2 rounded-md flex items-center gap-2 cursor-pointer ${
+                            state === s
+                              ? "bg-[#00965f] text-white"
+                              : "hover:bg-gray-100"
+                          } transition-colors duration-200`}
+                        >
+                          <IoLocationOutline className="text-sm" />
+                          {s}
                         </div>
-                      </>
-                    )}
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-[#00965f] text-white p-4 rounded-xl text-sm font-bold
-                  hover:scale-105 transition-all duration-300 shadow-lg shadow-[#00965f]/20
-                  flex items-center justify-center gap-2"
+                className="w-full bg-[#00965f] text-white p-3 rounded-md font-bold shadow hover:bg-[#0e7249] transition-colors duration-200 text-base"
               >
-                <IoGlobeOutline className="text-xl" />
+                <IoGlobeOutline className="text-xl mr-2 inline-block align-middle" />
                 Explore Courses
               </button>
             </form>
             <HorizontalRule />
           </div>
         </div>
-
-        {/* Course slider - Adjusted bottom margin */}
-        <div className="md:w-1/2 relative md:pl-8 mt-8 w-full mb-8">
-          <div
-            className="rounded-xl overflow-hidden bg-transparent cursor-pointer max-w-[500px] h-full mx-auto"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-            onClick={(e) => {
-              if (!country || !state) {
-                toast.error(
-                  "Please select your location to access the course",
-                  {
-                    duration: 3000,
-                    position: "top-right",
-                    style: {
-                      background: "#FEE2E2",
-                      color: "#991B1B",
-                      border: "1px solid #F87171",
-                    },
-                  }
-                );
-              } else {
-                handleSubmit(e);
-              }
-            }}
-          >
-            <img
-              src={courseSlides[currentSlide].image}
-              alt={courseSlides[currentSlide].title}
-              className="w-full h-48 md:h-64 object-cover rounded-t-xl"
-            />
-            <div className="p-4 md:p-6 bg-transparent rounded-b-xl">
-              <h3 className="text-xl md:text-2xl font-bold text-[#2C3E50] mb-2">
-                {courseSlides[currentSlide].title}
-              </h3>
-              <p className="text-[#34495E] mb-4 text-base md:text-lg line-clamp-2">
-                {courseSlides[currentSlide].description}
-              </p>
-              <div className="flex justify-between items-center text-sm md:text-base">
-                <span className="bg-[#3498DB] text-white px-3 py-1 rounded-full">
-                  {courseSlides[currentSlide].duration}
-                </span>
-                <span className="text-[#E74C3C] font-medium border-2 px-1">
-                  {courseSlides[currentSlide].level}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Navigation buttons  */}
-          <div className="absolute top-1/2 -translate-y-1/2 w-[90%] hidden md:flex justify-between px-2 pointer-events-none">
-            <button
-              onClick={prevSlide}
-              className="p-2 ml-10 rounded-full bg-white/20 hover:bg-white/50 shadow-lg transition-all pointer-events-auto"
-              aria-label="Previous course"
-            >
-              <BsChevronLeft className="text-xl md:text-2xl text-gray-800" />
-            </button>
-            <button
-              onClick={nextSlide}
-              className="p-2 mr-4 rounded-full bg-white/20 hover:bg-white/50 shadow-lg transition-all pointer-events-auto"
-              aria-label="Next course"
-            >
-              <BsChevronRight className="text-xl md:text-2xl text-gray-800" />
-            </button>
-          </div>
-
-          {/* Slide indicators */}
-          <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex space-x-2">
-            {courseSlides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setCurrentSlide(index);
-                  setIsPaused(true);
-                  setTimeout(() => setIsPaused(false), 3000);
-                }}
-                className={`w-2 h-2 rounded-full transition-all duration-300 hover:bg-[#00965f]/70 ${
-                  currentSlide === index ? "bg-[#00965f] w-4" : "bg-gray-300"
-                }`}
-                aria-label={`Go to course ${index + 1}`}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

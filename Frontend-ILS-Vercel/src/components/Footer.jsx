@@ -18,16 +18,6 @@ const Footer = () => {
         <p className="text-gray-400 mb-6">
           Don't wait — make a smart & logical quote here. It's pretty easy.
         </p>
-        <div className="flex justify-center">
-          <input
-            type="email"
-            placeholder="Enter your email here"
-            className="p-3 rounded-l-md w-80 text-black border border-[#00965f]"
-          />
-          <button className="bg-[#00965f] px-6 py-3 rounded-r-md text-white">
-            Subscribe Now
-          </button>
-        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
