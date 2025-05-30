@@ -3,8 +3,16 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
-import { getAllCourses } from "../../../redux/features/courseSlice";
+
 import { FaStar, FaUsers, FaClock, FaBriefcase, FaChartLine, FaGraduationCap, FaArrowRight } from "react-icons/fa";
+
+import {
+  getAllCourses,
+  getSingleCourse,
+} from "../../../redux/features/courseSlice";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FaStar, FaUsers, FaClock } from "react-icons/fa";
 import AuthModal from "../sharedComponents/authModal";
 import { motion } from "framer-motion";
 import categoryData from "./category.json";
@@ -12,6 +20,7 @@ import categoryData from "./category.json";
 const CategoryPage = () => {
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
+  const router = useRouter();
   const { courses } = useSelector((state) => state.courses);
   const { user } = useSelector((state) => state.user);
   const [categoryCourses, setCategoryCourses] = useState([]);
@@ -52,13 +61,29 @@ const CategoryPage = () => {
     }
   }, [courses, searchParams]);
 
-  const handleCourseClick = (course) => {
+  const handleCourseClick = async (course) => {
     if (!user) {
       setSelectedCourse(course);
       setShowModal(true);
       return;
     }
-    window.open(`/banglore/courses/${course._id}`, "_blank");
+
+
+    try {
+      await dispatch(getSingleCourse(course._id)).unwrap();
+      const isEnrolled = user.enrolledCourses?.some(
+        (enrolledCourse) => enrolledCourse.courseId === course._id
+      );
+
+      if (isEnrolled) {
+        router.push(`/banglore/courses/${course._id}`);
+      } else {
+        router.push("/banglore/demo-videos");
+      }
+    } catch (error) {
+      console.error("Error fetching course:", error);
+    }
+
   };
 
   const toggleModal = () => {
@@ -236,6 +261,7 @@ const CategoryPage = () => {
         toggleModal={toggleModal}
         selectedCourse={selectedCourse}
         fromDemoClass={true}
+        fromCategoryPage={true}
       />
     </div>
   );
