@@ -4,7 +4,15 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 
-import { FaStar, FaUsers, FaClock, FaBriefcase, FaChartLine, FaGraduationCap, FaArrowRight } from "react-icons/fa";
+import {
+  FaStar,
+  FaUsers,
+  FaClock,
+  FaBriefcase,
+  FaChartLine,
+  FaGraduationCap,
+  FaArrowRight,
+} from "react-icons/fa";
 
 import {
   getAllCourses,
@@ -12,10 +20,10 @@ import {
 } from "../../../redux/features/courseSlice";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FaStar, FaUsers, FaClock } from "react-icons/fa";
 import AuthModal from "../sharedComponents/authModal";
 import { motion } from "framer-motion";
 import categoryData from "./category.json";
+import UserReviews from "../sharedComponents/UserReviews";
 
 const CategoryPage = () => {
   const searchParams = useSearchParams();
@@ -47,7 +55,8 @@ const CategoryPage = () => {
 
       // Filter courses based on category
       const filteredCourses = courses.filter(
-        (course) => course.category.toLowerCase() === decodedCategory.toLowerCase()
+        (course) =>
+          course.category.toLowerCase() === decodedCategory.toLowerCase()
       );
       setCategoryCourses(filteredCourses);
 
@@ -68,7 +77,6 @@ const CategoryPage = () => {
       return;
     }
 
-
     try {
       await dispatch(getSingleCourse(course._id)).unwrap();
       const isEnrolled = user.enrolledCourses?.some(
@@ -83,7 +91,6 @@ const CategoryPage = () => {
     } catch (error) {
       console.error("Error fetching course:", error);
     }
-
   };
 
   const toggleModal = () => {
@@ -96,7 +103,12 @@ const CategoryPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#00965f]"></div>
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#00965f]"></div>
+          <p className="text-gray-600 font-medium">
+            Loading amazing courses...
+          </p>
+        </div>
       </div>
     );
   }
@@ -106,66 +118,49 @@ const CategoryPage = () => {
     : "All";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-24 pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-8 pb-0">
       <div className="container mx-auto px-4">
-        {/* Hero Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-16 text-center"
-        >
-          <h1 className="text-5xl font-bold text-[#164758] mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#164758] to-[#00965f]">
-            {categoryName} Courses
-          </h1>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Master the skills you need to excel in {categoryName}. Our expert-led courses will help you achieve your career goals.
-          </p>
-        </motion.div>
+        {/* Hero Section with Parallax Effect */}
 
-        {/* Category Details Card */}
+        {/* Category Details Card with Glass Effect */}
         {categoryDetails && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mb-16"
+            className="mb-12"
           >
-            <div className="bg-white rounded-2xl shadow-xl p-8 flex flex-col md:flex-row gap-8 transform hover:scale-[1.02] transition-transform duration-300">
-              <div className="flex-shrink-0 relative">
+            <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 flex flex-col md:flex-row gap-6 transform hover:scale-[1.02] transition-all duration-300 border border-white/20">
+              <div className="flex-shrink-0 relative group">
                 <img
                   src={categoryDetails.image}
                   alt={categoryName}
-                  className="w-full md:w-80 h-64 object-cover rounded-xl shadow-lg"
+                  className="w-full md:w-64 h-40 object-cover rounded-xl shadow-lg transform transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-xl"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
-              <div className="flex-1 space-y-6">
-                <p className="text-gray-700 text-lg leading-relaxed">{categoryDetails.description}</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-gray-50 p-4 rounded-xl">
-                    <div className="flex items-center gap-3 mb-2">
+              <div className="flex-1 space-y-4">
+                <p className="text-gray-700 text-base leading-relaxed">
+                  {categoryDetails.description}
+                </p>
+                <div className="bg-white/50 backdrop-blur-sm p-4 rounded-xl border border-white/20 shadow-lg">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="bg-[#00965f]/10 p-2 rounded-lg">
                       <FaBriefcase className="text-[#00965f] text-xl" />
-                      <h4 className="text-lg font-semibold text-[#164758]">Career Paths</h4>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {categoryDetails.job_roles.map((role, index) => (
-                        <span key={index} className="bg-[#00965f]/10 text-[#00965f] px-3 py-1 rounded-full text-sm">
-                          {role}
-                        </span>
-                      ))}
-                    </div>
+                    <h4 className="text-lg font-semibold text-[#164758]">
+                      Career Paths
+                    </h4>
                   </div>
-                  <div className="bg-gray-50 p-4 rounded-xl">
-                    <div className="flex items-center gap-3 mb-2">
-                      <FaChartLine className="text-[#00965f] text-xl" />
-                      <h4 className="text-lg font-semibold text-[#164758]">Course Level</h4>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="bg-[#00965f]/10 text-[#00965f] px-4 py-1 rounded-full text-sm font-medium">
-                        {categoryDetails.difficulty}
+                  <div className="flex flex-wrap gap-2">
+                    {categoryDetails.job_roles.map((role, index) => (
+                      <span
+                        key={index}
+                        className="bg-[#00965f]/10 text-[#00965f] px-3 py-1.5 rounded-full text-sm font-medium hover:bg-[#00965f]/20 transition-colors duration-300"
+                      >
+                        {role}
                       </span>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -173,86 +168,140 @@ const CategoryPage = () => {
           </motion.div>
         )}
 
-        {/* Course Cards Section */}
-        {categoryCourses.length === 0 ? (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            className="text-center py-16"
-          >
-            <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md mx-auto">
-              <FaGraduationCap className="text-6xl text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-600 text-lg">
-                No courses found in this category.
-              </p>
+        {/* Course Cards Section with Enhanced Design */}
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <h2 className="text-2xl font-bold text-[#164758]">
+              Available Courses
+            </h2>
+            <div className="flex flex-wrap gap-3">
+              <select className="bg-white border border-gray-200 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00965f] focus:border-transparent text-sm">
+                <option value="">Price Range</option>
+                <option value="0-1000">₹0 - ₹1,000</option>
+                <option value="1000-5000">₹1,000 - ₹5,000</option>
+                <option value="5000+">₹5,000+</option>
+              </select>
+
+              <select className="bg-white border border-gray-200 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00965f] focus:border-transparent text-sm">
+                <option value="">Duration</option>
+                <option value="0-5">0-5 hours</option>
+                <option value="5-10">5-10 hours</option>
+                <option value="10+">10+ hours</option>
+              </select>
+
+              <select className="bg-white border border-gray-200 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00965f] focus:border-transparent text-sm">
+                <option value="">Level</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+
+              <select className="bg-white border border-gray-200 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00965f] focus:border-transparent text-sm">
+                <option value="">Sort By</option>
+                <option value="popular">Most Popular</option>
+                <option value="newest">Newest</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+              </select>
             </div>
-          </motion.div>
-        ) : (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {categoryCourses.map((course, index) => (
-              <motion.div
-                key={course._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-              >
-                <div className="relative group">
-                  <img
-                    src={course.thumbnail}
-                    alt={course.title}
-                    className="w-full h-56 object-cover transform transition-transform duration-300 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  {course.price && (
-                    <div className="absolute top-4 right-4 bg-[#00965f] text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg transform hover:scale-105 transition-transform duration-300">
-                      ₹{course.price.$numberDecimal}
-                    </div>
-                  )}
+          </div>
+
+          {categoryCourses.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6 }}
+              className="text-center py-20"
+            >
+              <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl p-12 max-w-md mx-auto border border-white/20">
+                <div className="bg-[#00965f]/10 p-6 rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+                  <FaGraduationCap className="text-6xl text-[#00965f]" />
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-[#164758] mb-3 line-clamp-1">
-                    {course.title}
-                  </h3>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                    {course.description}
-                  </p>
-                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-                    <div className="flex items-center gap-2">
-                      <FaUsers className="text-[#00965f]" />
-                      <span>{course.enrolledStudents || 0} students</span>
+                <h3 className="text-2xl font-semibold text-[#164758] mb-4">
+                  No Courses Found
+                </h3>
+                <p className="text-gray-600 text-lg">
+                  We couldn't find any courses in this category yet. Check back
+                  soon for new additions!
+                </p>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+            >
+              {categoryCourses.map((course, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className="bg-white/80 h-half backdrop-blur-lg rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl border border-white/20 max-w-[280px] mx-auto w-full mb-4"
+                >
+                  <div className="relative group h-1/2">
+                    <img
+                      src={course.thumbnail}
+                      alt={course.title}
+                      className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    {course.price && (
+                      <div className="absolute top-1.5 right-1.5 bg-[#00965f] text-white px-2 py-0.5 rounded-full text-xs font-semibold shadow-lg transform hover:scale-105 transition-transform duration-300">
+                        ₹{course.price.$numberDecimal}
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3">
+                    <h3 className="text-sm font-semibold text-[#164758] mb-1 line-clamp-1">
+                      {course.title}
+                    </h3>
+                    <p className="text-gray-600 text-xs mb-2 line-clamp-2">
+                      {course.description}
+                    </p>
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
+                      <div className="flex items-center gap-1">
+                        <div className="bg-[#00965f]/10 p-0.5 rounded">
+                          <FaUsers className="text-[#00965f] text-xs" />
+                        </div>
+                        <span className="font-medium">
+                          {course.enrolledStudents || 0}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="bg-[#00965f]/10 p-0.5 rounded">
+                          <FaClock className="text-[#00965f] text-xs" />
+                        </div>
+                        <span className="font-medium">
+                          {course.duration || "N/A"}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <FaClock className="text-[#00965f]" />
-                      <span>{course.duration || "N/A"}</span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1">
+                        <div className="bg-yellow-100 p-0.5 rounded">
+                          <FaStar className="text-yellow-400 text-xs" />
+                        </div>
+                        <span className="text-gray-700 font-medium text-xs">
+                          {course.rating || "New"}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => handleCourseClick(course)}
+                        className="bg-[#00965f] text-white px-3 py-1 rounded-md font-semibold hover:bg-[#007a4d] transition-all duration-300 flex items-center gap-1 group shadow-sm hover:shadow-md text-xs"
+                      >
+                        View
+                        <FaArrowRight className="transform group-hover:translate-x-1 transition-transform duration-300 text-xs" />
+                      </button>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <FaStar className="text-yellow-400" />
-                      <span className="text-gray-700 font-medium">
-                        {course.rating || "New"}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => handleCourseClick(course)}
-                      className="bg-[#00965f] text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-[#007a4d] transition-all duration-300 flex items-center gap-2 group"
-                    >
-                      View Course
-                      <FaArrowRight className="transform group-hover:translate-x-1 transition-transform duration-300" />
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </div>
       </div>
 
       {/* Auth Modal */}
@@ -263,6 +312,11 @@ const CategoryPage = () => {
         fromDemoClass={true}
         fromCategoryPage={true}
       />
+
+      {/* User Reviews Section */}
+      <div className="mt-16">
+        <UserReviews />
+      </div>
     </div>
   );
 };
