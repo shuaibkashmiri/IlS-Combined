@@ -1,0 +1,207 @@
+{
+  "categories": [
+    {
+      "name": "Frontend Development",
+      "description": "Frontend Development focuses on creating the user-facing part of a website, ensuring a seamless and engaging experience. You’ll learn to build responsive and interactive interfaces using core technologies like HTML, CSS, and JavaScript, along with modern frameworks such as React, Angular, or Vue.js. This course covers essential design principles, accessibility standards, and performance optimization techniques to craft visually appealing and functional websites. It’s perfect for those who enjoy combining creativity with technical skills to bring web designs to life.",
+      "image": "https://kodmek.com/wp-content/uploads/2021/01/front-end-developer-1600x900-1.jpg",
+      "job_roles": ["Frontend Developer", "UI Developer", "Web Designer"],
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "Backend Development",
+      "description": "Backend Development dives into the server-side of web applications, where the core logic and data management happen. This course teaches you how to build robust APIs, manage databases, and ensure smooth communication between the server and the frontend using languages like Node.js, Python, or Java. You’ll explore concepts like authentication, data security, and server optimization to create scalable and secure applications. It’s ideal for those who enjoy problem-solving and working on the foundational aspects of web technology.",
+      "image": "https://example.com/images/backend-dev.jpg",
+      "job_roles": ["Backend Developer", "Server Engineer", "API Developer"],
+      "difficulty": "Advanced"
+    },
+    {
+      "name": "Full Stack Development",
+      "description": "Full Stack Development equips you with the skills to handle both frontend and backend aspects of web development, making you a versatile developer. You’ll learn to design user interfaces, develop server-side logic, manage databases, and integrate APIs using a combination of technologies like JavaScript, Python, and SQL. This course also covers deployment, version control, and collaboration tools to help you build and maintain complete web applications. It’s a comprehensive journey for those aiming to become all-round developers capable of tackling any part of a project.",
+      "image": "https://example.com/images/fullstack-dev.jpg",
+      "job_roles": ["Full Stack Developer", "Web Developer", "Software Engineer"],
+      "difficulty": "Advanced"
+    },
+    {
+      "name": "Web Design",
+      "description": "Web Design is all about crafting visually stunning and user-friendly website layouts that enhance the user experience. This course introduces you to design principles, color theory, and typography, while teaching you how to use tools like Figma and CSS frameworks like Tailwind or Bootstrap. You’ll learn to create responsive designs that look great on any device and ensure accessibility for all users. It’s a great starting point for creatives who want to break into the world of web development with a focus on aesthetics.",
+      "image": "https://tse3.mm.bing.net/th?id=OIP.ExUMGcgLhnkYGwDJXWDd1QHaF8&pid=Api&P=0&h=180",
+      "job_roles": ["Web Designer", "UX Designer", "Graphic Designer"],
+      "difficulty": "Beginner"
+    },
+    {
+      "name": "Machine Learning",
+      "description": "Machine Learning is a transformative field that enables computers to learn from data and make intelligent decisions without explicit programming. This course covers the fundamentals of ML algorithms, including regression, classification, and clustering, using Python libraries like Scikit-learn and TensorFlow. You’ll work on real-world projects such as predictive modeling and recommendation systems, gaining hands-on experience in data preprocessing and model evaluation. It’s designed for those eager to explore the intersection of data and technology to solve complex problems.",
+      "image": "https://www.naukri.com/campus/career-guidance/wp-content/uploads/2024/07/what-is-machine-learning.jpg",
+      "job_roles": ["Machine Learning Engineer", "Data Scientist", "AI Researcher"],
+      "difficulty": "Advanced"
+    },
+    {
+      "name": "Deep Learning",
+      "description": "Deep Learning takes you into the advanced realm of artificial intelligence, focusing on neural networks and their applications in cutting-edge technologies. You’ll learn to build and train deep neural networks using frameworks like TensorFlow and PyTorch, tackling tasks such as image recognition, natural language processing, and speech synthesis. This course also explores optimization techniques, regularization, and GPU computing to handle large-scale datasets effectively. It’s perfect for those with a strong foundation in machine learning who want to push the boundaries of AI innovation.",
+      "image": "https://example.com/images/deep-learning.jpg",
+      "job_roles": ["Deep Learning Engineer", "AI Specialist", "Research Scientist"],
+      "difficulty": "Expert"
+    },
+    {
+      "name": "Data Analysis",
+      "description": "Data Analysis empowers you to uncover meaningful insights from raw data, a critical skill in today’s data-driven world. This course teaches you how to clean, process, and visualize data using tools like Python, Pandas, and Tableau, while also covering statistical methods to interpret trends and patterns. You’ll work on real-world datasets to create reports and dashboards that drive business decisions. It’s an excellent choice for those who enjoy working with numbers and want to make data actionable for organizations.",
+      "image": "https://example.com/images/data-analysis.jpg",
+      "job_roles": ["Data Analyst", "Business Analyst", "Data Engineer"],
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "Artificial Intelligence",
+      "description": "Artificial Intelligence introduces you to the foundational concepts of creating intelligent systems that can mimic human decision-making and problem-solving. This course covers topics like search algorithms, knowledge representation, and expert systems, alongside practical applications in robotics and automation. You’ll use Python to implement AI techniques and explore ethical considerations in AI development. It’s a broad and exciting field for those curious about how machines can replicate human intelligence and transform industries.",
+      "image": "https://example.com/images/ai.jpg",
+      "job_roles": ["AI Engineer", "Robotics Engineer", "AI Consultant"],
+      "difficulty": "Advanced"
+    },
+    {
+      "name": "Android Development",
+      "description": "Android Development teaches you how to create powerful mobile applications for the world’s most widely used operating system. Using Java or Kotlin and Android Studio, you’ll learn to build apps with intuitive interfaces, integrate APIs, and manage app lifecycles. This course covers essential topics like user authentication, push notifications, and local storage, ensuring your apps are both functional and user-friendly. It’s ideal for developers who want to tap into the massive Android user base and create impactful mobile experiences.",
+      "image": "https://example.com/images/android-dev.jpg",
+      "job_roles": ["Android Developer", "Mobile App Developer", "Software Engineer"],
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "iOS Development",
+      "description": "iOS Development focuses on building applications for Apple’s ecosystem, including iPhones and iPads, using Swift and Xcode. This course guides you through creating sleek and efficient apps, covering topics like UI design with SwiftUI, data persistence with Core Data, and integrating Apple’s APIs for features like maps and notifications. You’ll also learn best practices for optimizing app performance and ensuring compatibility across iOS devices. It’s a great path for developers aiming to create high-quality apps for Apple users.",
+      "image": "https://example.com/images/ios-dev.jpg",
+      "job_roles": ["iOS Developer", "Mobile App Developer", "Software Engineer"],
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "Cross-Platform Development",
+      "description": "Cross-Platform Development enables you to build mobile apps that run seamlessly on both Android and iOS using frameworks like Flutter or React Native. This course teaches you how to write a single codebase that delivers native-like performance across platforms, saving time and resources. You’ll explore topics like state management, responsive design, and platform-specific integrations to ensure a consistent user experience. It’s perfect for developers who want to maximize their reach with minimal effort.",
+      "image": "https://example.com/images/cross-platform-dev.jpg",
+      "job_roles": ["Mobile Developer", "App Developer", "Software Engineer"],
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "Cloud Computing",
+      "description": "Cloud Computing introduces you to the world of scalable and flexible infrastructure using platforms like AWS, Azure, and Google Cloud. This course covers the fundamentals of cloud architecture, including storage, compute, and networking, as well as how to deploy applications in the cloud. You’ll learn about cost management, security best practices, and disaster recovery to ensure reliable cloud solutions. It’s an essential skill for modern developers looking to leverage the power of the cloud for their projects.",
+      "image": "https://example.com/images/cloud-computing.jpg",
+      "job_roles": ["Cloud Engineer", "Cloud Architect", "DevOps Engineer"],
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "DevOps",
+      "description": "DevOps bridges the gap between development and operations, focusing on automation, collaboration, and continuous delivery. This course teaches you how to implement CI/CD pipelines, manage infrastructure as code with tools like Terraform, and use containerization with Docker and Kubernetes. You’ll also explore monitoring, logging, and incident response to ensure system reliability. It’s a critical skill set for those aiming to streamline development workflows and improve deployment efficiency.",
+      "image": "https://example.com/images/devops.jpg",
+      "job_roles": ["DevOps Engineer", "Site Reliability Engineer", "Automation Engineer"],
+      "difficulty": "Advanced"
+    },
+    {
+      "name": "AWS",
+      "description": "AWS (Amazon Web Services) provides a comprehensive platform for cloud computing, and this course helps you master its core services. You’ll learn to set up virtual servers with EC2, store data with S3, and manage databases with RDS, all while ensuring security with IAM roles. The course also covers advanced topics like serverless computing with Lambda and auto-scaling for high availability. It’s perfect for those who want to specialize in AWS and build cloud solutions for businesses.",
+      "image": "https://tse1.mm.bing.net/th?id=OIP.r1fG2ol0-6CnTq1rNot0lwHaE-&pid=Api&P=0&h=180",
+      "job_roles": ["AWS Engineer", "Cloud Specialist", "Solutions Architect"],
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "Azure",
+      "description": "Azure, Microsoft’s cloud platform, offers a wide range of services for building, deploying, and managing applications. You’ll learn to use Azure services like App Services, Blob Storage, and Azure Functions, along with security and networking features for robust cloud solutions. It also covers hybrid cloud strategies and integration with on-premises infrastructure. It’s ideal for developers aiming to harness Microsoft Azure for scalable and secure applications.",
+      "image": "https://arbit.com.br/wp-content/uploads/2023/05/Cloud-Computing.png",
+      "job_roles": ["Azure Engineer", "Cloud Specialist", "Solutions Architect"],
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "SEO",
+      "description": "Search Engine Optimization (SEO) is crucial for improving a website’s visibility on search engines like Google. This course covers on-page and off-page SEO techniques, including keyword research, link building, and content optimization. You’ll learn to use tools like Google Analytics and SEMrush to track performance and improve rankings. It’s a foundational skill for anyone looking to drive organic traffic and grow an online presence.",
+      "image": "https://example.com/images/seo.jpg",
+      "job_roles": ["SEO Specialist", "Digital Marketer", "Content Strategist"],
+      "difficulty": "Beginner"
+    },
+    {
+      "name": "Social Media Marketing",
+      "description": "Social Media Marketing leverages platforms like Instagram, Twitter, and LinkedIn to promote brands and engage with audiences. This course teaches you how to create compelling content, run targeted campaigns, and analyze performance metrics to maximize reach. You’ll explore strategies for building a brand’s online presence and fostering customer loyalty through social media. It’s perfect for those who enjoy creative marketing and want to connect with audiences on a global scale.",
+      "image": "https://example.com/images/social-media-marketing.jpg",
+      "job_roles": ["Social Media Manager", "Digital Marketer", "Content Creator"],
+      "difficulty": "Beginner"
+    },
+    {
+      "name": "Content Marketing",
+      "description": "Content Marketing focuses on creating and distributing valuable content to attract and retain a target audience. This course covers content strategy, blogging, video marketing, and email campaigns, teaching you how to craft messages that resonate with customers. You’ll learn to measure content performance and optimize for engagement and conversions. It’s a vital skill for marketers aiming to build trust and authority in their niche.",
+      "image": "https://example.com/images/content-marketing.jpg",
+      "job_roles": ["Content Marketer", "Copywriter", "Marketing Strategist"],
+      "difficulty": "Beginner"
+    },
+    {
+      "name": "Digital Advertising",
+      "description": "Digital Advertising equips you with the skills to run paid ad campaigns on platforms like Google Ads, Facebook Ads, and LinkedIn Ads. This course covers ad creation, targeting, budgeting, and performance tracking to ensure a high return on investment. You’ll learn to optimize campaigns using A/B testing and analytics, driving traffic and conversions effectively. It’s a great choice for marketers looking to master paid media and grow businesses quickly.",
+      "image": "https://example.com/images/digital-advertising.jpg",
+      "job_roles": ["Digital Advertiser", "PPC Specialist", "Marketing Manager"],
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "Python",
+      "description": "Python is a versatile and beginner-friendly programming language used in web development, data science, and automation. This course covers Python fundamentals, including data structures, file handling, and object-oriented programming, with practical projects like building a web scraper. You’ll also explore libraries like Pandas and NumPy for data analysis. It’s an excellent starting point for anyone looking to enter the world of programming with a widely-used language.",
+      "image": "https://tse2.mm.bing.net/th?id=OIP.w_C5b8sg6KbxD2f0SIOSnQHaE-&pid=Api&P=0&h=180",
+      "job_roles": ["Python Developer", "Data Analyst", "Software Engineer"],
+      "difficulty": "Beginner"
+    },
+    {
+      "name": "Java",
+      "description": "Java is a powerful, platform-independent language widely used in enterprise applications and Android development. This course teaches you Java fundamentals, including classes, inheritance, and exception handling, with hands-on projects like building a simple app. You’ll also learn about Java’s ecosystem, including frameworks like Spring for web development. It’s a solid choice for developers aiming to work on large-scale, robust applications.",
+      "image": "https://example.com/images/java.jpg",
+      "job_roles": ["Java Developer", "Software Engineer", "Backend Developer"],
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "JavaScript",
+      "description": "JavaScript is the backbone of interactive web development, enabling dynamic and responsive user experiences. This course covers core JavaScript concepts like DOM manipulation, events, and asynchronous programming, along with modern frameworks like React. You’ll build projects such as a to-do app or a weather dashboard to solidify your skills. It’s essential for anyone looking to create engaging web applications and enhance user interfaces.",
+      "image": "https://example.com/images/javascript.jpg",
+      "job_roles": ["JavaScript Developer", "Frontend Developer", "Web Developer"],
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "C++",
+      "description": "C++ is a high-performance language used in system programming, game development, and competitive programming. This course teaches you C++ fundamentals, including pointers, memory management, and templates, with projects like building a simple game. You’ll also explore advanced topics like multithreading and performance optimization. It’s a challenging but rewarding choice for developers aiming to work on performance-critical applications.",
+      "image": "https://example.com/images/cpp.jpg",
+      "job_roles": ["C++ Developer", "Game Developer", "Software Engineer"],
+      "difficulty": "Advanced"
+    },
+    {
+      "name": "SQL",
+      "description": "SQL (Structured Query Language) is essential for managing and querying relational databases like MySQL and PostgreSQL. This course covers database fundamentals, including creating tables, writing complex queries, and optimizing performance. You’ll work on real-world scenarios like analyzing sales data or managing user records. It’s a must-have skill for anyone working with data in roles like backend development or data analysis.",
+      "image": "https://static.vecteezy.com/system/resources/previews/036/044/336/original/sql-database-icon-logo-design-ui-or-ux-app-png.png",
+      "job_roles": ["Database Administrator", "Data Analyst", "Backend Developer"],
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "NoSQL",
+      "description": "NoSQL databases like MongoDB and Cassandra are designed for handling unstructured data and scalability. This course teaches you how to model data in NoSQL systems, perform CRUD operations, and ensure high availability. You’ll work on projects like building a product catalog for an e-commerce site. It’s a great choice for developers working on modern, scalable applications that require flexible data structures.",
+      "image": "https://example.com/images/nosql.jpg",
+      "job_roles": ["Database Engineer", "Data Engineer", "Backend Developer"],
+      "difficulty": "Intermediate"
+    },
+    {
+      "name": "Database Design",
+      "description": "Database Design focuses on creating efficient and scalable database systems that meet application needs. This course covers normalization, indexing, and schema design, teaching you how to structure data for performance and maintainability. You’ll work on designing databases for real-world applications, such as an online store or a social media platform. It’s a critical skill for anyone aiming to build robust and reliable data systems.",
+      "image": "https://example.com/images/database-design.jpg",
+      "job_roles": ["Database Designer", "Data Architect", "DBA"],
+      "difficulty": "Advanced"
+    },
+    {
+      "name": "Network Security",
+      "description": "Network Security focuses on protecting networks from unauthorized access, attacks, and data breaches. This course teaches you how to configure firewalls, set up VPNs, and monitor network traffic using tools like Wireshark. You’ll also learn about common threats like DDoS attacks and how to mitigate them effectively. It’s an essential skill for professionals aiming to secure organizational networks and ensure safe communication.",
+      "image": "https://example.com/images/network-security.jpg",
+      "job_roles": ["Network Security Engineer", "Cybersecurity Analyst", "IT Security Specialist"],
+      "difficulty": "Advanced"
+    },
+    {
+      "name": "Ethical Hacking",
+      "description": "Ethical Hacking equips you with the skills to identify and fix vulnerabilities by simulating cyber attacks. This course covers penetration testing, vulnerability scanning, and exploit development using tools like Metasploit and Kali Linux. You’ll learn to think like a hacker to secure systems, with hands-on labs like cracking passwords or exploiting web apps. It’s ideal for those passionate about cybersecurity and protecting digital assets.",
+      "image": "https://example.com/images/ethical-hacking.jpg",
+      "job_roles": ["Ethical Hacker", "Penetration Tester", "Security Consultant"],
+      "difficulty": "Advanced"
+    },
+    {
+      "name": "Information Security",
+      "description": "Information Security focuses on protecting sensitive data and ensuring compliance with regulations like GDPR. This course covers risk management, encryption, and security policies, teaching you how to safeguard organizational information. You’ll work on case studies involving data breaches and learn to implement security controls effectively. It’s a crucial skill for professionals aiming to maintain trust and integrity in digital systems.",
+      "image": "https://example.com/images/information-security.jpg",
+      "job_roles": ["Information Security Officer", "Cybersecurity Manager", "Compliance Analyst"],
+      "difficulty": "Intermediate"
+    }
+  ]
+}
