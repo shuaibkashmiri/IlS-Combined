@@ -53,6 +53,11 @@ const CategoryPage = () => {
 
       const decodedCategory = decodeURIComponent(category);
 
+      // Defensive check for categories array
+      const categories = Array.isArray(categoryData?.categories)
+        ? categoryData.categories
+        : [];
+
       // Filter courses based on category
       const filteredCourses = courses.filter(
         (course) =>
@@ -61,7 +66,7 @@ const CategoryPage = () => {
       setCategoryCourses(filteredCourses);
 
       // Find category details from category.json
-      const categoryObj = categoryData.categories.find(
+      const categoryObj = categories.find(
         (cat) => cat.name.toLowerCase() === decodedCategory.toLowerCase()
       );
       setCategoryDetails(categoryObj || null);
@@ -153,14 +158,15 @@ const CategoryPage = () => {
                     </h4>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {categoryDetails.job_roles.map((role, index) => (
-                      <span
-                        key={index}
-                        className="bg-[#00965f]/10 text-[#00965f] px-3 py-1.5 rounded-full text-sm font-medium hover:bg-[#00965f]/20 transition-colors duration-300"
-                      >
-                        {role}
-                      </span>
-                    ))}
+                    {Array.isArray(categoryDetails?.job_roles) &&
+                      categoryDetails.job_roles.map((role, index) => (
+                        <span
+                          key={index}
+                          className="bg-[#00965f]/10 text-[#00965f] px-3 py-1.5 rounded-full text-sm font-medium hover:bg-[#00965f]/20 transition-colors duration-300"
+                        >
+                          {role}
+                        </span>
+                      ))}
                   </div>
                 </div>
               </div>
