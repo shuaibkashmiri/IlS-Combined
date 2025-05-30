@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@ramonak/react-progress-bar": "^5.0.0",
     "@reduxjs/toolkit": "^2.7.0",
     "axios": "^1.9.0",
+    "core-js": "^3.36.0",
     "country-flag-icons": "^1.5.19",
     "dotenv": "^16.5.0",
     "framer-motion": "^12.10.2",
@@ -23,7 +25,6 @@
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
     "react-intersection-observer": "^9.16.0",
-    "react-progressbar": "^15.4.1",
     "react-redux": "^9.2.0",
     "react-slick": "^0.30.3",
     "recharts": "^2.15.3",

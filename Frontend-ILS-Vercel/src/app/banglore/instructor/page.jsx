@@ -21,7 +21,7 @@ import {
   FaSignOutAlt,
   FaChalkboardTeacher,
 } from "react-icons/fa";
-import ProgressBar from "react-progressbar"; // Import react-progressbar
+import ProgressBar from "@ramonak/react-progress-bar"; // Import react-progressbar
 import { getUserDetails } from "../../../redux/features/userSlice";
 import {
   addCourse,
@@ -1921,12 +1921,15 @@ const InstructorPanel = () => {
                         <span>Uploading: {uploadProgress}%</span>
                         <span>{uploadProgress}%</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-[#00965f] h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${uploadProgress}%` }}
-                        />
-                      </div>
+                      <ProgressBar
+                        completed={uploadProgress}
+                        bgColor="#00965f"
+                        height="10px"
+                        borderRadius="5px"
+                        labelAlignment="center"
+                        labelColor="#ffffff"
+                        labelSize="12px"
+                      />
                     </div>
                   )}
                 </div>
