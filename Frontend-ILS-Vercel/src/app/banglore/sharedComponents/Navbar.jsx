@@ -271,14 +271,21 @@ const Navbar = () => {
               {activeDropdown === "Categories" && (
                 <div className="absolute left-0 mt-2 w-56 bg-white border rounded-md shadow-lg z-50">
                   {getCategories().map((category) => (
-                    <Link
+                    <button
                       key={category}
-                      href={`/banglore/courses/category/${category.toLowerCase()}`}
-                      className="block px-4 py-2 hover:bg-gray-100"
-                      onClick={() => setActiveDropdown(null)}
+                      onClick={() => {
+                        setActiveDropdown(null);
+                        const encodedCategory = encodeURIComponent(
+                          category.toLowerCase()
+                        );
+                        router.push(
+                          `/banglore/category?category=${encodedCategory}`
+                        );
+                      }}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
                       {category}
-                    </Link>
+                    </button>
                   ))}
                 </div>
               )}
