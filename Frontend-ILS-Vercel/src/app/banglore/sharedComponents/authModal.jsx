@@ -12,7 +12,13 @@ import { useRouter } from "next/navigation";
 import { FaEye, FaEyeSlash, FaCheck, FaTimes } from "react-icons/fa";
 import axios from "axios";
 
-const AuthModal = ({ showModal, toggleModal }) => {
+const AuthModal = ({
+  showModal,
+  toggleModal,
+  selectedCourse,
+  fromDemoClass,
+  fromCategoryPage,
+}) => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     fullname: "",
@@ -65,7 +71,7 @@ const AuthModal = ({ showModal, toggleModal }) => {
         toast.success("Logged in successfully!");
         toggleModal();
 
-        if (result.tempdata?.length >= 1) {
+        if (!fromCategoryPage && result.tempdata?.length >= 1) {
           router.push("/banglore/dashboard");
         }
       } else {
@@ -106,7 +112,7 @@ const AuthModal = ({ showModal, toggleModal }) => {
       toast.success("Logged in successfully with Google!");
       toggleModal();
 
-      if (result.tempdata?.length >= 1) {
+      if (!fromCategoryPage && result.tempdata?.length >= 1) {
         router.push("/banglore/dashboard");
       }
     } catch (err) {
