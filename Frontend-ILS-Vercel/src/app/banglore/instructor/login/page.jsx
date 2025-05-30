@@ -60,19 +60,19 @@ const InstructorLoginPage = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left Section - Image/Illustration */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-green-600 to-green-800 items-center justify-center p-12">
+      <div className="hidden lg:flex pb-0 lg:w-1/2 bg-gradient-to-br from-green-600 to-green-800 items-center justify-center py-4">
         <div className="max-w-lg text-white">
-          <h2 className="text-4xl font-bold mb-6">Welcome Back!</h2>
-          <p className="text-lg mb-8 text-green-100">
+          <h2 className="text-4xl font-bold mt-2">Welcome Back!</h2>
+          <p className="text-lg mt-2 text-green-100">
             Access your instructor dashboard to manage courses, track student
             progress, and create engaging learning experiences.
           </p>
-          <div className="relative w-full h-64">
+          <div className="relative w-full h-[550px]">
             <Image
-              src="/Instructor.png"
+              src="/ins-img.png"
               alt="Instructor Illustration"
               fill
-              className="object-contain"
+              className="object-contain m-0"
               priority
             />
           </div>

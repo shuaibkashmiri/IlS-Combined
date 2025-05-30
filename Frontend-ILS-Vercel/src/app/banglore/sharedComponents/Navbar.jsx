@@ -20,6 +20,7 @@ import {
   FaSearch,
   FaChevronRight,
   FaGlobe,
+  FaSignInAlt,
 } from "react-icons/fa";
 import AuthModal from "./authModal";
 
@@ -33,6 +34,7 @@ const Navbar = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null);
+  const [showSearchBar, setShowSearchBar] = useState(false);
 
   const { user } = useSelector((state) => state.user);
   const { courses } = useSelector((state) => state.courses);
@@ -141,6 +143,13 @@ const Navbar = () => {
     }
   };
 
+  // Add useEffect to set initial search results
+  useEffect(() => {
+    if (courses) {
+      setSearchResults(courses);
+    }
+  }, [courses]);
+
   const getCategories = () => {
     const categories = courses?.map((course) => course.category) || [];
     return [...new Set(categories)]; // Get unique categories
@@ -180,27 +189,110 @@ const Navbar = () => {
             <div className="relative group ml-4">
               <button
                 onClick={() => toggleDropdown("Explore")}
-                className={`flex items-center space-x-1 px-4 py-2 rounded transition-colors ${activeDropdown === "Explore" ? "text-[#164758] font-medium bg-gray-100" : "hover:text-[#164758]"}`}
+                className={`flex items-center space-x-1 px-4 py-2 rounded transition-colors ${
+                  activeDropdown === "Explore"
+                    ? "text-[#164758] font-medium bg-gray-100"
+                    : "hover:text-[#164758]"
+                }`}
               >
                 <span>Explore</span>
-                <FaChevronDown size={12} className={`transform transition-transform duration-200 ${activeDropdown === "Explore" ? "rotate-180" : ""}`} />
+                <FaChevronDown
+                  size={12}
+                  className={`transform transition-transform duration-200 ${
+                    activeDropdown === "Explore" ? "rotate-180" : ""
+                  }`}
+                />
               </button>
               {activeDropdown === "Explore" && (
-                <div className="absolute left-0 mt-2 w-56 bg-white border rounded-md shadow-lg z-50">
-                  <Link href="/banglore/courses" className="block px-4 py-2 hover:bg-gray-100">All Courses</Link>
-                  <Link href="/banglore/courses/category/technology" className="block px-4 py-2 hover:bg-gray-100">Technology</Link>
-                  <Link href="/banglore/courses/category/business" className="block px-4 py-2 hover:bg-gray-100">Business</Link>
-                  <Link href="/banglore/courses/category/design" className="block px-4 py-2 hover:bg-gray-100">Design</Link>
+                <div className="absolute left-0 mt-2 w-72 bg-white border rounded-md shadow-lg z-50">
+                  <Link
+                    href="/banglore/courses"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                  >
+                    All Courses
+                  </Link>
+                  {getCategories().map((category) => (
+                    <div key={category} className="relative group/sub">
+                      <div className="flex items-center justify-between w-full px-4 py-2 hover:bg-gray-100 border-b last:border-b-0">
+                        <span>{category}</span>
+                        <FaChevronRight size={12} className="text-gray-500" />
+                      </div>
+                      <div className="absolute left-full top-0 w-72 bg-white border rounded-md shadow-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-200">
+                        {getCoursesByCategory(category).map((course) => (
+                          <button
+                            key={course._id}
+                            onClick={() => handleCourseClick(course)}
+                            className="flex items-center w-full px-4 py-2 hover:bg-gray-100 border-b last:border-b-0"
+                          >
+                            <div className="flex items-center space-x-3">
+                              <img
+                                src={course.thumbnail}
+                                alt={course.title}
+                                className="w-10 h-10 object-cover rounded"
+                              />
+                              <div className="flex-1">
+                                <p className="text-sm font-medium">
+                                  {course.title}
+                                </p>
+                                {course.price && (
+                                  <p className="text-xs text-gray-500">
+                                    ₹{course.price.$numberDecimal}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
-            <Link href="/banglore/plans" className="px-4 py-2 rounded hover:text-[#164758]">Plans & Pricing</Link>
+
+            {/* Categories Dropdown */}
+            <div className="relative group">
+              <button
+                onClick={() => toggleDropdown("Categories")}
+                className={`flex items-center space-x-1 px-4 py-2 rounded transition-colors ${
+                  activeDropdown === "Categories"
+                    ? "text-[#164758] font-medium bg-gray-100"
+                    : "hover:text-[#164758]"
+                }`}
+              >
+                <span>Categories</span>
+                <FaChevronDown
+                  size={12}
+                  className={`transform transition-transform duration-200 ${
+                    activeDropdown === "Categories" ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              {activeDropdown === "Categories" && (
+                <div className="absolute left-0 mt-2 w-56 bg-white border rounded-md shadow-lg z-50">
+                  {getCategories().map((category) => (
+                    <Link
+                      key={category}
+                      href={`/banglore/courses/category/${category.toLowerCase()}`}
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => setActiveDropdown(null)}
+                    >
+                      {category}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Centered Search bar */}
           <div className="flex-1 flex justify-center items-center">
             <div className="relative w-full max-w-xl">
-              <form onSubmit={handleSearch} className="flex items-center w-full">
+              {/* Desktop Search */}
+              <form
+                onSubmit={handleSearch}
+                className="hidden md:flex items-center w-full"
+              >
                 <div className="relative w-full">
                   <input
                     type="text"
@@ -218,9 +310,10 @@ const Navbar = () => {
                   </div>
                 </div>
               </form>
+
               {/* Search Results Dropdown */}
               {showSearchResults && (
-                <div className="absolute mt-2 w-full bg-white border rounded-md shadow-lg max-h-[70vh] overflow-y-auto z-50">
+                <div className="absolute mt-2 w-full bg-white border rounded-md shadow-lg max-h-[70vh] overflow-y-auto z-[60]">
                   {searchResults.length > 0 ? (
                     searchResults.map((course) => (
                       <button
@@ -265,32 +358,114 @@ const Navbar = () => {
             <button className="hidden md:flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100">
               <FaGlobe className="text-xl text-gray-600" />
             </button>
+
+            {/* Mobile Search Icon */}
+            <button
+              onClick={() => {
+                setShowSearchBar(!showSearchBar);
+                setMobileMenuOpen(false);
+                setShowSearchResults(true);
+                setSearchResults(courses || []);
+              }}
+              className="md:hidden flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100"
+            >
+              <FaSearch className="h-5 w-5 text-gray-600" />
+            </button>
+
+            {/* Mobile Search Bar */}
+            {showSearchBar && (
+              <div className="md:hidden fixed inset-0 bg-white z-[60]">
+                <div className="p-4 border-b">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        setShowSearchBar(false);
+                        setSearchQuery("");
+                        setShowSearchResults(false);
+                      }}
+                      className="p-2 hover:bg-gray-100 rounded-full"
+                    >
+                      <FaTimes size={20} className="text-gray-600" />
+                    </button>
+                    <form onSubmit={handleSearch} className="flex-1">
+                      <div className="relative">
+                        <input
+                          type="text"
+                          placeholder="Search courses..."
+                          value={searchQuery}
+                          onChange={handleSearchChange}
+                          onFocus={() => setShowSearchResults(true)}
+                          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00965f] focus:border-transparent text-sm"
+                        />
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <FaSearch className="h-4 w-4 text-gray-400" />
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                {/* Search Results */}
+                {showSearchResults && (
+                  <div className="p-4">
+                    {searchResults.length > 0 ? (
+                      searchResults.map((course) => (
+                        <button
+                          key={course._id}
+                          onClick={() => {
+                            handleCourseClick(course);
+                            setSearchQuery("");
+                            setShowSearchResults(false);
+                            setShowSearchBar(false);
+                          }}
+                          className="block w-full px-4 py-3 text-left hover:bg-gray-100 border-b last:border-b-0"
+                        >
+                          <div className="flex items-center space-x-3">
+                            <img
+                              src={course.thumbnail}
+                              alt={course.title}
+                              className="w-12 h-12 object-cover rounded"
+                            />
+                            <div className="flex-1">
+                              <p className="font-medium text-sm">
+                                {course.title}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                {course.category}
+                              </p>
+                            </div>
+                          </div>
+                        </button>
+                      ))
+                    ) : (
+                      <div className="px-4 py-3 text-sm text-gray-500">
+                        No courses found
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Login/Signup Buttons */}
             {!user ? (
               <div className="flex space-x-2">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="px-6 py-2 rounded-md font-medium bg-[#00965f] text-white hover:bg-[#164758] transition"
+                  className="hidden md:flex px-6 py-2.5 rounded-lg font-medium bg-white text-[#00965f] border-2 border-[#00965f] hover:bg-[#00965f] hover:text-white transition-all duration-300 shadow-sm items-center gap-2"
                 >
-                  Log in
+                  <FaSignInAlt className="text-lg" />
+                  <span>Login</span>
                 </button>
+                {/* Mobile Login Button */}
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="px-6 py-2 rounded-md font-medium bg-[#00965f] text-white hover:bg-[#164758] transition"
+                  className="md:hidden flex items-center gap-2 px-4 py-2 rounded-lg font-medium bg-white text-[#00965f] border-2 border-[#00965f] hover:bg-[#00965f] hover:text-white transition-all duration-300"
                 >
-                  Sign up
+                  <FaSignInAlt className="text-lg" />
+                  <span className="text-sm">Login</span>
                 </button>
                 {showUserMenu && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border">
-                    <button
-                      onClick={() => {
-                        router.push("/banglore/instructor/login");
-                        setShowUserMenu(false);
-                      }}
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#164758] hover:text-white w-full text-left"
-                    >
-                      Login as Instructor
-                    </button>
                     <button
                       onClick={() => {
                         toggleModal();
@@ -298,7 +473,18 @@ const Navbar = () => {
                       }}
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#164758] hover:text-white w-full text-left"
                     >
+                      <FaUser className="mr-2" />
                       Login as User
+                    </button>
+                    <button
+                      onClick={() => {
+                        router.push("/banglore/instructor/login");
+                        setShowUserMenu(false);
+                      }}
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#164758] hover:text-white w-full text-left"
+                    >
+                      <FaTachometerAlt className="mr-2" />
+                      Login as Instructor
                     </button>
                   </div>
                 )}
@@ -346,21 +532,20 @@ const Navbar = () => {
                       Dashboard
                     </button> */}
 
-<button
-  onClick={() => {
-    if (user?.role === "instructor") {
-      router.push("/banglore/instructor");
-    } else {
-      router.push("/banglore/dashboard");
-    }
-    setShowUserMenu(false);
-  }}
-  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#164758] hover:text-white w-full text-left"
->
-  <FaTachometerAlt className="mr-2" />
-  Dashboard
-</button>
-
+                    <button
+                      onClick={() => {
+                        if (user?.role === "instructor") {
+                          router.push("/banglore/instructor");
+                        } else {
+                          router.push("/banglore/dashboard");
+                        }
+                        setShowUserMenu(false);
+                      }}
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#164758] hover:text-white w-full text-left"
+                    >
+                      <FaTachometerAlt className="mr-2" />
+                      Dashboard
+                    </button>
 
                     <button
                       onClick={handleLogout}
@@ -385,160 +570,123 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t mt-4 p-4 space-y-4">
-            {/* Add Search Bar for Mobile */}
-            <form onSubmit={handleSearch} className="mb-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search courses..."
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  onBlur={() => {
-                    setTimeout(() => setShowSearchResults(false), 200);
-                  }}
-                  onFocus={() => {
-                    if (searchQuery.trim()) setShowSearchResults(true);
-                  }}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00965f] focus:border-transparent text-sm"
-                />
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaSearch className="h-4 w-4 text-gray-400" />
-                </div>
+          <div
+            className="md:hidden fixed inset-0 backdrop-blur-sm bg-white/30 z-50"
+            onClick={toggleMobileMenu}
+          >
+            <div
+              className="fixed right-0 top-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-4 border-b">
+                <button
+                  onClick={toggleMobileMenu}
+                  className="flex items-center justify-end w-full"
+                >
+                  <FaTimes size={24} className="text-gray-600" />
+                </button>
               </div>
-            </form>
 
-            {/* Mobile Search Results */}
-            {showSearchResults && searchResults.length > 0 && (
-              <div className="mt-2 bg-white border rounded-md shadow-lg max-h-96 overflow-y-auto">
-                {searchResults.map((course) => (
-                  <button
-                    key={course._id}
-                    onClick={() => {
-                      handleCourseClick(course);
-                      setSearchQuery("");
-                      setShowSearchResults(false);
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block w-full px-4 py-2 text-left hover:bg-gray-100 border-b last:border-b-0"
+              <div className="p-4 space-y-4 overflow-y-auto h-[calc(100%-64px)]">
+                {[
+                  { name: "Home", path: "/banglore" },
+                  { name: "About", path: "/banglore/about" },
+                  { name: "Contact", path: "/banglore/contact" },
+                ].map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.path}
+                    className="block hover:text-[#164758] py-2"
+                    onClick={() => setMobileMenuOpen(false)}
                   >
-                    <div className="flex items-center space-x-2">
-                      <img
-                        src={course.thumbnail}
-                        alt={course.title}
-                        className="w-8 h-8 object-cover rounded"
-                      />
-                      <div>
-                        <p className="font-medium text-sm">{course.title}</p>
-                        {course.price && (
-                          <p className="text-xs text-gray-500">
-                            ₹{course.price.$numberDecimal}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </button>
+                    {item.name}
+                  </Link>
                 ))}
-              </div>
-            )}
 
-            {[
-              { name: "Home", path: "/banglore" },
-              { name: "About", path: "/banglore/about" },
-              { name: "Contact", path: "/banglore/contact" },
-            ].map((item) => (
-              <Link
-                key={item.name}
-                href={item.path}
-                className="block hover:text-[#164758]"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
-
-            {/* Courses Dropdown in Mobile */}
-            <div>
-              <button
-                onClick={() => toggleDropdown("Courses")}
-                className="flex items-center space-x-1 hover:text-[#164758] w-full"
-              >
-                <span>Courses</span>
-                <FaChevronDown size={12} />
-              </button>
-              {activeDropdown === "Courses" && (
-                <div className="mt-2 bg-white border rounded-md shadow-md">
-                  {getCategories().map((category) => (
-                    <div key={category}>
-                      <button
-                        onClick={() =>
-                          setActiveCategory(
-                            activeCategory === category ? null : category
-                          )
-                        }
-                        className="flex items-center justify-between w-full px-4 py-2 text-left hover:bg-gray-100 border-b"
-                      >
-                        <span className="font-medium">{category}</span>
-                        <FaChevronDown
-                          size={12}
-                          className={`transform transition-transform ${
-                            activeCategory === category ? "rotate-180" : ""
-                          }`}
-                        />
-                      </button>
-                      {activeCategory === category && (
-                        <div className="bg-gray-50">
-                          {getCoursesByCategory(category).map((course) => (
-                            <button
-                              key={course._id}
-                              onClick={() => handleCourseClick(course)}
-                              className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-                            >
-                              <div className="flex items-center space-x-2">
-                                <img
-                                  src={course.thumbnail}
-                                  alt={course.title}
-                                  className="w-8 h-8 object-cover rounded"
-                                />
-                                <div>
-                                  <p className="text-sm">{course.title}</p>
-                                  {course.price && (
-                                    <p className="text-xs text-gray-500">
-                                      ₹{course.price.$numberDecimal}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-                            </button>
-                          ))}
+                {/* Courses Dropdown in Mobile */}
+                <div>
+                  <button
+                    onClick={() => toggleDropdown("Courses")}
+                    className="flex items-center space-x-1 hover:text-[#164758] w-full py-2"
+                  >
+                    <span>Courses</span>
+                    <FaChevronDown size={12} />
+                  </button>
+                  {activeDropdown === "Courses" && (
+                    <div className="mt-2 bg-white border rounded-md shadow-md">
+                      {getCategories().map((category) => (
+                        <div key={category}>
+                          <button
+                            onClick={() =>
+                              setActiveCategory(
+                                activeCategory === category ? null : category
+                              )
+                            }
+                            className="flex items-center justify-between w-full px-4 py-2 text-left hover:bg-gray-100 border-b"
+                          >
+                            <span className="font-medium">{category}</span>
+                            <FaChevronDown
+                              size={12}
+                              className={`transform transition-transform ${
+                                activeCategory === category ? "rotate-180" : ""
+                              }`}
+                            />
+                          </button>
+                          {activeCategory === category && (
+                            <div className="bg-gray-50">
+                              {getCoursesByCategory(category).map((course) => (
+                                <button
+                                  key={course._id}
+                                  onClick={() => handleCourseClick(course)}
+                                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                                >
+                                  <div className="flex items-center space-x-2">
+                                    <img
+                                      src={course.thumbnail}
+                                      alt={course.title}
+                                      className="w-8 h-8 object-cover rounded"
+                                    />
+                                    <div>
+                                      <p className="text-sm">{course.title}</p>
+                                      {course.price && (
+                                        <p className="text-xs text-gray-500">
+                                          ₹{course.price.$numberDecimal}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                      )}
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
-              )}
-            </div>
 
-            {/* Update mobile menu user section */}
-            {user && (
-              <div className="space-y-2">
-                <button
-                  onClick={() => {
-                    router.push("/banglore/dashboard");
-                    setMobileMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Dashboard
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Logout
-                </button>
+                {/* Update mobile menu user section */}
+                {user && (
+                  <div className="space-y-2 pt-4 border-t">
+                    <button
+                      onClick={() => {
+                        router.push("/banglore/dashboard");
+                        setMobileMenuOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Dashboard
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         )}
       </nav>
