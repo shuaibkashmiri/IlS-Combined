@@ -6,7 +6,7 @@
           {
             "name": "Frontend Development",
             "description": "Frontend Development focuses on creating the user-facing part of a website, ensuring a seamless and engaging experience. You’ll learn to build responsive and interactive interfaces using core technologies like HTML, CSS, and JavaScript, along with modern frameworks such as React, Angular, or Vue.js. This course covers essential design principles, accessibility standards, and performance optimization techniques to craft visually appealing and functional websites. It’s perfect for those who enjoy combining creativity with technical skills to bring web designs to life.",
-            "image": "https://example.com/images/frontend-dev.jpg",
+            "image": "https://kodmek.com/wp-content/uploads/2021/01/front-end-developer-1600x900-1.jpg",
             "job_roles": ["Frontend Developer", "UI Developer", "Web Designer"],
             "difficulty": "Intermediate"
           },
