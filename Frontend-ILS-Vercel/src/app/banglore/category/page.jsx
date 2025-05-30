@@ -6,17 +6,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { getAllCourses } from "../../../redux/features/courseSlice";
 import Link from "next/link";
 import { FaStar, FaUsers, FaClock } from "react-icons/fa";
-import AuthModal from "../sharedComponents/authModal";
 
 const CategoryPage = () => {
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
   const { courses } = useSelector((state) => state.courses);
-  const { user } = useSelector((state) => state.user);
   const [categoryCourses, setCategoryCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState(null);
 
   useEffect(() => {
     dispatch(getAllCourses());
@@ -40,23 +36,6 @@ const CategoryPage = () => {
       setLoading(false);
     }
   }, [courses, searchParams]);
-
-  const handleCourseClick = (course) => {
-    if (!user) {
-      setSelectedCourse(course);
-      setShowModal(true);
-      return;
-    }
-    // If user is logged in, show the course link
-    window.open(`/banglore/courses/${course._id}`, "_blank");
-  };
-
-  const toggleModal = () => {
-    setShowModal(!showModal);
-    if (!showModal) {
-      setSelectedCourse(null);
-    }
-  };
 
   if (loading) {
     return (
@@ -126,12 +105,12 @@ const CategoryPage = () => {
                         {course.rating || "New"}
                       </span>
                     </div>
-                    <button
-                      onClick={() => handleCourseClick(course)}
+                    <Link
+                      href={`/banglore/courses/${course._id}`}
                       className="bg-[#00965f] text-white px-4 py-2 rounded-md hover:bg-[#007a4d] transition-colors duration-300"
                     >
                       View Course
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -139,14 +118,6 @@ const CategoryPage = () => {
           </div>
         )}
       </div>
-
-      {/* Auth Modal */}
-      <AuthModal
-        showModal={showModal}
-        toggleModal={toggleModal}
-        selectedCourse={selectedCourse}
-        fromDemoClass={true}
-      />
     </div>
   );
 };
