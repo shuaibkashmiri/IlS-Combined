@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -25,7 +25,7 @@ import { motion } from "framer-motion";
 import categoryData from "./category.json";
 import UserReviews from "../sharedComponents/UserReviews";
 
-const CategoryPage = () => {
+const CategoryPageContent = () => {
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
   const router = useRouter();
@@ -324,6 +324,25 @@ const CategoryPage = () => {
         <UserReviews />
       </div>
     </div>
+  );
+};
+
+const CategoryPage = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+          <div className="flex flex-col items-center gap-4">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#00965f]"></div>
+            <p className="text-gray-600 font-medium">
+              Loading amazing courses...
+            </p>
+          </div>
+        </div>
+      }
+    >
+      <CategoryPageContent />
+    </Suspense>
   );
 };
 
