@@ -77,12 +77,35 @@ export const addOfflineStudent = createAsyncThunk(
   }
 );
 
+// Offline Student Login
+export const offlineStudentLogin = createAsyncThunk(
+  "inhouse/offlineStudentLogin",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/offline-student-login`,
+        credentials,
+        {
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Login failed" }
+      );
+    }
+  }
+);
+
 const initialState = {
   offlineCourses: [],
   offlineStudents: [],
   loading: false,
   error: null,
   message: null,
+  currentStudent: null,
+  isAuthenticated: false,
 };
 
 const inhouseSlice = createSlice({
@@ -92,6 +115,10 @@ const inhouseSlice = createSlice({
     resetMessage: (state) => {
       state.message = null;
       state.error = null;
+    },
+    logout: (state) => {
+      state.currentStudent = null;
+      state.isAuthenticated = false;
     },
   },
   extraReducers: (builder) => {
@@ -151,9 +178,25 @@ const inhouseSlice = createSlice({
       .addCase(addOfflineStudent.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message || "Failed to add student";
+      })
+      // Offline Student Login
+      .addCase(offlineStudentLogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(offlineStudentLogin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentStudent = action.payload.student;
+        state.isAuthenticated = true;
+        state.message = "Login successful";
+      })
+      .addCase(offlineStudentLogin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message || "Login failed";
+        state.isAuthenticated = false;
       });
   },
 });
 
-export const { resetMessage } = inhouseSlice.actions;
+export const { resetMessage, logout } = inhouseSlice.actions;
 export default inhouseSlice.reducer;
