@@ -32,27 +32,6 @@ export default function ThreeSixtyCarousel({ courses, onWatchDemo }) {
     return () => clearInterval(autoRotateRef.current);
   }, [numCards, isHovered]);
 
-  const rotate = (dir) => {
-    // First update the active index
-    setActiveIndex((prev) => {
-      const newIndex = prev + dir;
-      if (newIndex < 0) return numCards - 1;
-      if (newIndex >= numCards) return 0;
-      return newIndex;
-    });
-
-    // Then update the angle
-    setAngle((prev) => prev + dir * (360 / numCards));
-
-    clearInterval(autoRotateRef.current);
-    if (!isHovered) {
-      autoRotateRef.current = setInterval(() => {
-        setAngle((prev) => prev - 360 / numCards);
-        setActiveIndex((prev) => (prev + 1) % numCards);
-      }, autoRotateInterval);
-    }
-  };
-
   const toggleBookmark = (courseId, e) => {
     e.stopPropagation();
     setBookmarked((prev) => ({
@@ -63,14 +42,15 @@ export default function ThreeSixtyCarousel({ courses, onWatchDemo }) {
 
   return (
     <div
-      className="relative flex flex-col items-center select-none mr-16"
+      className="relative md:ml-12 flex flex-col items-center select-none w-full"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
         className="relative mx-auto"
         style={{
-          width: cardWidth * 2.2,
+          width: "100%",
+          maxWidth: cardWidth * 2.2,
           height: cardHeight * 1.3,
           perspective: 1500,
         }}
@@ -244,22 +224,6 @@ export default function ThreeSixtyCarousel({ courses, onWatchDemo }) {
             );
           })}
         </div>
-
-        {/* Navigation Buttons */}
-        <button
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg p-3 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all duration-300 hover:scale-110"
-          style={{ marginLeft: -40 }}
-          onClick={() => rotate(-1)}
-        >
-          <BsArrowLeft size={24} />
-        </button>
-        <button
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg p-3 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all duration-300 hover:scale-110"
-          style={{ marginRight: -40 }}
-          onClick={() => rotate(1)}
-        >
-          <BsArrowRight size={24} />
-        </button>
       </div>
     </div>
   );

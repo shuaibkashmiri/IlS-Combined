@@ -84,7 +84,7 @@ const AboutUs = () => {
         </div>
 
         {/* Team Section */}
-        <div className="mb-8">
+        <div className="mb-8" id="team">
           <div className="max-w-3xl mb-18 mt-0 mx-auto">
             <h2 className="text-4xl font-bold text-primary text-center mb-2 mt-2">
               Our Team

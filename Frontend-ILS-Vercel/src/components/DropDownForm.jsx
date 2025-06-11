@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import ThreeSixtyCarousel from "./ThreeSixtyCarousel";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import {
   BsBook,
   BsClock,
@@ -125,55 +126,72 @@ const DropdownForm = () => {
       <header className="absolute top-0 left-0 w-full z-20 py-4 px-4 md:px-8">
         <div className="container mx-auto flex items-center justify-between">
           {/* Logo Placeholder */}
-          <div className="text-emerald-600 text-2xl md:text-3xl font-bold">
-            LOGO
+          <div className="text-emerald-600 w-25">
+            <img src="/logo.png" alt="ILS Logo" className="md:ml-18" />
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-emerald-50 transition-colors"
-          >
-            <svg
-              className="w-6 h-6 text-emerald-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          {/* Mobile Menu Button and In-House Link */}
+          <div className="md:hidden flex items-center gap-4">
+            <a
+              href="/inhouse/student/login"
+              className="hover:text-grey-600 transition-colors bg-emerald-600 p-1 px-2 rounded-2xl text-white text-sm"
             >
-              {isMobileMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
-          </button>
+              In-House
+            </a>
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 rounded-lg hover:bg-emerald-50 transition-colors"
+            >
+              <svg
+                className="w-6 h-6 text-emerald-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                {isMobileMenuOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
+            </button>
+          </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6 text-gray-700 font-medium">
+          <nav className="hidden md:flex items-center space-x-6 text-gray-700 font-medium md:mr-10">
             <a
-              href="#about"
+              href="#aboutus"
               className="hover:text-emerald-600 transition-colors"
             >
               About
             </a>
-            <a href="#" className="hover:text-emerald-600 transition-colors">
+            <a
+              href="#team"
+              className="hover:text-emerald-600 transition-colors"
+            >
               Team
             </a>
-            <a href="#" className="hover:text-emerald-600 transition-colors">
-              Pricing
+            <a
+              href="#contact"
+              className="hover:text-emerald-600 transition-colors"
+            >
+              Contact
             </a>
-            <a href="#" className="hover:text-emerald-600 transition-colors">
-              Issues
+            <a
+              href="/inhouse/student/login"
+              className="hover:text-grey-600 transition-colors bg-emerald-600 p-1 px-2 rounded-2xl  text-white"
+            >
+              In-House
             </a>
           </nav>
         </div>
@@ -189,28 +207,22 @@ const DropdownForm = () => {
             >
               <div className="flex flex-col p-4 space-y-4">
                 <a
-                  href="#about"
+                  href="#aboutus"
                   className="text-gray-700 hover:text-emerald-600 transition-colors py-2"
                 >
                   About
                 </a>
                 <a
-                  href="#"
+                  href="#team"
                   className="text-gray-700 hover:text-emerald-600 transition-colors py-2"
                 >
                   Team
                 </a>
                 <a
-                  href="#"
+                  href="#contact"
                   className="text-gray-700 hover:text-emerald-600 transition-colors py-2"
                 >
-                  Pricing
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-700 hover:text-emerald-600 transition-colors py-2"
-                >
-                  Issues
+                  Contact
                 </a>
               </div>
             </motion.nav>
@@ -219,8 +231,8 @@ const DropdownForm = () => {
       </header>
 
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-24 relative z-10 flex items-center min-h-screen">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-16">
+      <div className="container py-24 relative z-10 flex items-center min-h-screen">
+        <div className="max-w-7xl md:ml-24 flex flex-col lg:flex-row items-center justify-between gap-16">
           {/* Left Side - Country/State Dropdown Form */}
           <motion.div
             className="w-full lg:w-1/2 space-y-8 text-center lg:text-left order-2 lg:order-1 lg:pr-8"
@@ -243,8 +255,8 @@ const DropdownForm = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Turn knowledge into career success with interactive, modern, and
+              immersive online courses.{" "}
             </motion.p>
             {/* Start Now Button */}
             <motion.button
@@ -267,7 +279,7 @@ const DropdownForm = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <h2 className="text-3xl font-bold text-emerald-700 mb-8">
+            <h2 className="text-4xl font-bold text-emerald-700 md:ml-8 mb-8">
               Our Top Courses
             </h2>
             <ThreeSixtyCarousel

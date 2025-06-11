@@ -11,7 +11,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-[#164758] text-white p-12">
+    <footer className="bg-[#164758] text-white p-12" id="contact">
       {/* Newsletter Section */}
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold mb-4">
@@ -28,16 +28,31 @@ const Footer = () => {
           <h3 className="text-xl font-bold mb-4">Contact Us</h3>
           <ul className="space-y-2 text-gray-400">
             <li className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#00965f]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <svg
+                className="w-5 h-5 text-[#00965f]"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
                 <path d="M2 6h20v12H2z" />
                 <path d="M2 6l10 7 10-7" />
               </svg>
-              <a href="mailto:student@ilssrinagar.com" className="hover:text-[#00965f]">
+              <a
+                href="mailto:student@ilssrinagar.com"
+                className="hover:text-[#00965f]"
+              >
                 student@ilssrinagar.com
               </a>
             </li>
             <li className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#00965f]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <svg
+                className="w-5 h-5 text-[#00965f]"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
                 <path d="M20 17c0 2-4 4-8 4s-8-2-8-4V7c0-2 4-4 8-4s8 2 8 4v10z" />
                 <path d="M8 7h8" />
               </svg>
@@ -46,7 +61,13 @@ const Footer = () => {
               </a>
             </li>
             <li className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#00965f]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <svg
+                className="w-5 h-5 text-[#00965f]"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
                 <path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z" />
                 <circle cx="12" cy="9" r="2" />
               </svg>
