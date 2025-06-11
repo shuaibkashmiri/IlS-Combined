@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { offlineStudentLogin, resetMessage } from "@/redux/features/inhouseSlice";
+import {
+  offlineStudentLogin,
+  resetMessage,
+} from "@/redux/features/inhouseSlice";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -171,12 +174,12 @@ const OfflineStudentLogin = () => {
             <div className="relative">
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-white text-gray-500">
-                  Don't have an account?{" "}
+                  If you are In-House Student & Don't have an account?{" "}
                   <Link
-                    href="/inhouse/student/register"
+                    href="/banglore/contact"
                     className="font-medium text-indigo-600 hover:text-indigo-500"
                   >
-                    Register here
+                    Contact Admin
                   </Link>
                 </span>
               </div>
