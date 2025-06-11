@@ -4,7 +4,18 @@ import React, { useState, useEffect } from "react";
 import ThreeSixtyCarousel from "./ThreeSixtyCarousel";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { BsBook, BsClock, BsArrowRight, BsGlobe, BsGeoAlt, BsCodeSlash, BsLightning, BsRocket, BsStars, BsMap } from "react-icons/bs";
+import {
+  BsBook,
+  BsClock,
+  BsArrowRight,
+  BsGlobe,
+  BsGeoAlt,
+  BsCodeSlash,
+  BsLightning,
+  BsRocket,
+  BsStars,
+  BsMap,
+} from "react-icons/bs";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { GB, US, IN } from "country-flag-icons/react/3x2";
 
@@ -73,6 +84,7 @@ const DropdownForm = () => {
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isStateOpen, setIsStateOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (country) {
@@ -100,27 +112,110 @@ const DropdownForm = () => {
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-50 relative overflow-hidden">
       {/* Background Pattern - Keeping the subtle dot pattern */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, #10b981 1px, transparent 0)`,
-          backgroundSize: '60px 60px'
-        }}></div>
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, #10b981 1px, transparent 0)`,
+            backgroundSize: "60px 60px",
+          }}
+        ></div>
       </div>
 
       {/* Header */}
-      <header className="absolute top-0 left-0 w-full z-20 py-4 px-8">
+      <header className="absolute top-0 left-0 w-full z-20 py-4 px-4 md:px-8">
         <div className="container mx-auto flex items-center justify-between">
           {/* Logo Placeholder */}
-          <div className="text-emerald-600 text-3xl font-bold">
+          <div className="text-emerald-600 text-2xl md:text-3xl font-bold">
             LOGO
           </div>
-          {/* Navigation */}
-          <nav className="flex items-center space-x-6 text-gray-700 font-medium">
-            <a href="#" className="hover:text-emerald-600 transition-colors">About</a>
-            <a href="#" className="hover:text-emerald-600 transition-colors">Team</a>
-            <a href="#" className="hover:text-emerald-600 transition-colors">Pricing</a>
-            <a href="#" className="hover:text-emerald-600 transition-colors">Issues</a>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 rounded-lg hover:bg-emerald-50 transition-colors"
+          >
+            <svg
+              className="w-6 h-6 text-emerald-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              {isMobileMenuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
+          </button>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-6 text-gray-700 font-medium">
+            <a
+              href="#about"
+              className="hover:text-emerald-600 transition-colors"
+            >
+              About
+            </a>
+            <a href="#" className="hover:text-emerald-600 transition-colors">
+              Team
+            </a>
+            <a href="#" className="hover:text-emerald-600 transition-colors">
+              Pricing
+            </a>
+            <a href="#" className="hover:text-emerald-600 transition-colors">
+              Issues
+            </a>
           </nav>
         </div>
+
+        {/* Mobile Navigation */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.nav
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="md:hidden bg-white/95 backdrop-blur-sm mt-4 rounded-xl shadow-lg overflow-hidden"
+            >
+              <div className="flex flex-col p-4 space-y-4">
+                <a
+                  href="#about"
+                  className="text-gray-700 hover:text-emerald-600 transition-colors py-2"
+                >
+                  About
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-700 hover:text-emerald-600 transition-colors py-2"
+                >
+                  Team
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-700 hover:text-emerald-600 transition-colors py-2"
+                >
+                  Pricing
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-700 hover:text-emerald-600 transition-colors py-2"
+                >
+                  Issues
+                </a>
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Hero Section */}
@@ -139,7 +234,8 @@ const DropdownForm = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              We Are <br className="hidden md:block" /> <span className="text-emerald-600">ONLINE EDUCATION</span>
+              We Are <br className="hidden md:block" />{" "}
+              <span className="text-emerald-600">ONLINE EDUCATION</span>
             </motion.h1>
             <motion.p
               className="text-lg text-gray-700 max-w-md mx-auto lg:mx-0"
@@ -147,11 +243,15 @@ const DropdownForm = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
             </motion.p>
             {/* Start Now Button */}
             <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(16, 185, 129, 0.4)" }}
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 10px 20px rgba(16, 185, 129, 0.4)",
+              }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsModalOpen(true)}
               className="bg-gradient-to-r from-emerald-500 to-green-500 text-white px-10 py-4 rounded-full font-semibold text-xl shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center gap-2"
@@ -167,13 +267,15 @@ const DropdownForm = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <h2 className="text-3xl font-bold text-emerald-700 mb-8">Our Top Courses</h2>
-            <ThreeSixtyCarousel 
-              courses={courses} 
+            <h2 className="text-3xl font-bold text-emerald-700 mb-8">
+              Our Top Courses
+            </h2>
+            <ThreeSixtyCarousel
+              courses={courses}
               onWatchDemo={(course) => {
                 setIsModalOpen(true);
                 toast.info(`Selected course: ${course.title}`);
-              }} 
+              }}
             />
           </motion.div>
         </div>
@@ -194,27 +296,36 @@ const DropdownForm = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl"
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold text-gray-900">Select Your Location</h3>
+                <h3 className="text-2xl font-bold text-gray-900">
+                  Select Your Location
+                </h3>
                 <button
                   onClick={() => setIsModalOpen(false)}
                   className="text-gray-500 hover:text-gray-700 transition-colors"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
-              
+
               {/* Country/State Dropdown Form */}
               <div className="space-y-8">
                 {/* Country Selection */}
-                <motion.div
-                  className="relative"
-                  whileHover={{ scale: 1.01 }}
-                >
+                <motion.div className="relative" whileHover={{ scale: 1.01 }}>
                   <div
                     onClick={() => {
                       setIsCountryOpen(!isCountryOpen);
@@ -248,7 +359,9 @@ const DropdownForm = () => {
                           </motion.div>
                         )}
                         <div>
-                          <p className="text-sm text-emerald-600 font-medium mb-0.5">Select Country</p>
+                          <p className="text-sm text-emerald-600 font-medium mb-0.5">
+                            Select Country
+                          </p>
                           <p className="text-gray-900 font-semibold text-lg">
                             {country || "Choose your country"}
                           </p>
@@ -270,12 +383,12 @@ const DropdownForm = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         className="absolute z-[100] w-full mt-2 bg-white rounded-xl border border-emerald-200 shadow-xl"
-                        style={{ 
-                          maxHeight: '200px',
-                          overflowY: 'auto',
-                          top: '100%',
+                        style={{
+                          maxHeight: "200px",
+                          overflowY: "auto",
+                          top: "100%",
                           left: 0,
-                          right: 0
+                          right: 0,
                         }}
                       >
                         <div className="py-1">
@@ -285,7 +398,9 @@ const DropdownForm = () => {
                               initial={{ opacity: 0, x: -20 }}
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: index * 0.05 }}
-                              whileHover={{ backgroundColor: "rgba(16, 185, 129, 0.1)" }}
+                              whileHover={{
+                                backgroundColor: "rgba(16, 185, 129, 0.1)",
+                              }}
                               onClick={() => {
                                 setCountry(c);
                                 setIsCountryOpen(false);
@@ -303,8 +418,12 @@ const DropdownForm = () => {
                                 )}
                               </motion.div>
                               <div className="flex-1">
-                                <span className="text-gray-900 text-base font-medium block mb-0.5">{c}</span>
-                                <p className="text-emerald-600 text-sm">{countryStateData[c].length} locations</p>
+                                <span className="text-gray-900 text-base font-medium block mb-0.5">
+                                  {c}
+                                </span>
+                                <p className="text-emerald-600 text-sm">
+                                  {countryStateData[c].length} locations
+                                </p>
                               </div>
                             </motion.div>
                           ))}
@@ -316,10 +435,7 @@ const DropdownForm = () => {
 
                 {/* State Selection */}
                 {!isCountryOpen && (
-                  <motion.div
-                    className="relative"
-                    whileHover={{ scale: 1.01 }}
-                  >
+                  <motion.div className="relative" whileHover={{ scale: 1.01 }}>
                     <div
                       onClick={() => {
                         if (country) {
@@ -327,7 +443,11 @@ const DropdownForm = () => {
                           setIsCountryOpen(false);
                         }
                       }}
-                      className={`bg-white/70 backdrop-blur-sm rounded-xl p-4 cursor-pointer transition-all duration-300 border border-white/50 ${!country ? "opacity-50 cursor-not-allowed" : "hover:bg-white/90 hover:border-emerald-500/50"} shadow-md`}
+                      className={`bg-white/70 backdrop-blur-sm rounded-xl p-4 cursor-pointer transition-all duration-300 border border-white/50 ${
+                        !country
+                          ? "opacity-50 cursor-not-allowed"
+                          : "hover:bg-white/90 hover:border-emerald-500/50"
+                      } shadow-md`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -341,7 +461,9 @@ const DropdownForm = () => {
                             </div>
                           </motion.div>
                           <div>
-                            <p className="text-sm text-emerald-600 font-medium mb-0.5">Select State</p>
+                            <p className="text-sm text-emerald-600 font-medium mb-0.5">
+                              Select State
+                            </p>
                             <p className="text-gray-900 font-semibold text-lg">
                               {state || "Choose your state"}
                             </p>
@@ -363,12 +485,12 @@ const DropdownForm = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
                           className="absolute z-[100] w-full mt-2 bg-white rounded-xl border border-emerald-200 shadow-xl"
-                          style={{ 
-                            maxHeight: '200px',
-                            overflowY: 'auto',
-                            top: '100%',
+                          style={{
+                            maxHeight: "200px",
+                            overflowY: "auto",
+                            top: "100%",
                             left: 0,
-                            right: 0
+                            right: 0,
                           }}
                         >
                           <div className="py-1">
@@ -378,7 +500,9 @@ const DropdownForm = () => {
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: index * 0.05 }}
-                                whileHover={{ backgroundColor: "rgba(16, 185, 129, 0.1)" }}
+                                whileHover={{
+                                  backgroundColor: "rgba(16, 185, 129, 0.1)",
+                                }}
                                 onClick={() => {
                                   setState(s);
                                   setIsStateOpen(false);
@@ -392,8 +516,12 @@ const DropdownForm = () => {
                                   <BsGeoAlt className="text-emerald-500 text-xl" />
                                 </motion.div>
                                 <div className="flex-1">
-                                  <span className="text-gray-900 text-base font-medium block mb-0.5">{s}</span>
-                                  <p className="text-emerald-600 text-sm">View courses</p>
+                                  <span className="text-gray-900 text-base font-medium block mb-0.5">
+                                    {s}
+                                  </span>
+                                  <p className="text-emerald-600 text-sm">
+                                    View courses
+                                  </p>
                                 </div>
                               </motion.div>
                             ))}
@@ -426,7 +554,7 @@ const DropdownForm = () => {
     width: 100%;
     border: 6px solid #222;
     border-radius: 2rem;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
     display: inline-block;
     padding: 10px;
     background: #fff;
@@ -436,6 +564,6 @@ const DropdownForm = () => {
     box-shadow: 0 12px 32px rgba(16, 185, 129, 0.18);
     border-color: #00965f;
   }
-`}</style>
+`}</style>;
 
 export default DropdownForm;
