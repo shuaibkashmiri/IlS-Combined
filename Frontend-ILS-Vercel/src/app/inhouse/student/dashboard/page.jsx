@@ -10,8 +10,11 @@ import {
   FaChartLine,
   FaGraduationCap,
   FaCertificate,
+  FaDownload,
+  FaArrowRight,
 } from "react-icons/fa";
 import { toast } from "sonner";
+import Image from "next/image";
 
 const InhouseStudentDashboard = () => {
   const dispatch = useDispatch();
@@ -71,10 +74,10 @@ const InhouseStudentDashboard = () => {
     switch (activeSection) {
       case "dashboard":
         return (
-          <>
+          <div className="space-y-8">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">
@@ -90,7 +93,7 @@ const InhouseStudentDashboard = () => {
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">
@@ -106,7 +109,7 @@ const InhouseStudentDashboard = () => {
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">
@@ -122,7 +125,7 @@ const InhouseStudentDashboard = () => {
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Status</p>
@@ -138,23 +141,32 @@ const InhouseStudentDashboard = () => {
             </div>
 
             {/* Course Progress */}
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold text-[#164758] mb-6">
-                Course Progress
-              </h2>
-              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <section>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-[#164758]">
+                  Course Progress
+                </h2>
+                <button
+                  onClick={() => setActiveSection("courses")}
+                  className="flex items-center text-[#00965f] hover:text-[#008551] transition-colors"
+                >
+                  View All Courses
+                  <FaArrowRight className="ml-2 h-4 w-4" />
+                </button>
+              </div>
+              <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
                 {studentData.myCourses?.map((course, index) => (
                   <div key={index} className="mb-6 last:mb-0">
                     <div className="flex justify-between items-center mb-2">
                       <h3 className="font-semibold text-gray-800">
                         {course.course?.title}
                       </h3>
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm font-medium text-[#00965f]">
                         {Math.round((course.paidFee / course.finalPrice) * 100)}
                         % Complete
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div className="w-full bg-gray-100 rounded-full h-2.5">
                       <div
                         className="bg-[#00965f] h-2.5 rounded-full transition-all duration-300"
                         style={{
@@ -172,43 +184,56 @@ const InhouseStudentDashboard = () => {
                 ))}
               </div>
             </section>
-          </>
+          </div>
         );
 
       case "courses":
         return (
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <h2 className="text-2xl font-bold text-[#164758] mb-6">
-              My Courses
-            </h2>
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-[#164758]">My Courses</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {studentData.myCourses?.map((course, index) => (
                 <div
                   key={index}
-                  className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden"
+                  className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
                 >
                   <div className="relative h-48">
-                    <img
+                    <Image
                       src={course.course?.thumbnail}
                       alt={course.course?.title}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
                     />
                   </div>
-                  <div className="p-4">
+                  <div className="p-6">
                     <h3 className="font-semibold text-lg text-gray-800 mb-2">
                       {course.course?.title}
                     </h3>
-                    <p className="text-sm text-gray-600 mb-4">
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
                       {course.course?.description}
                     </p>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-[#00965f]">
-                        {Math.round((course.paidFee / course.finalPrice) * 100)}
-                        % Complete
-                      </span>
-                      <span className="text-sm text-gray-600">
-                        ₹{course.finalPrice?.toLocaleString()}
-                      </span>
+                    <div className="space-y-4">
+                      <div className="w-full bg-gray-100 rounded-full h-2">
+                        <div
+                          className="bg-[#00965f] h-2 rounded-full transition-all duration-300"
+                          style={{
+                            width: `${
+                              (course.paidFee / course.finalPrice) * 100
+                            }%`,
+                          }}
+                        ></div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-[#00965f]">
+                          {Math.round(
+                            (course.paidFee / course.finalPrice) * 100
+                          )}
+                          % Complete
+                        </span>
+                        <span className="text-sm font-medium text-gray-600">
+                          ₹{course.finalPrice?.toLocaleString()}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -219,27 +244,29 @@ const InhouseStudentDashboard = () => {
 
       case "exams":
         return (
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <h2 className="text-2xl font-bold text-[#164758] mb-6">
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-[#164758]">
               Upcoming Exams
             </h2>
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {studentData.myCourses?.map((course, index) => (
                 <div
                   key={index}
-                  className="border-b border-gray-200 pb-4 last:border-0"
+                  className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow"
                 >
-                  <h3 className="font-semibold text-gray-800 mb-2">
+                  <h3 className="font-semibold text-lg text-gray-800 mb-4">
                     {course.course?.title}
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-600">Next Exam</p>
-                      <p className="font-medium">Not Scheduled</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="bg-gray-50 p-4 rounded-xl">
+                      <p className="text-sm text-gray-600 mb-1">Next Exam</p>
+                      <p className="font-medium text-gray-800">Not Scheduled</p>
                     </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-600">Last Exam Score</p>
-                      <p className="font-medium">-</p>
+                    <div className="bg-gray-50 p-4 rounded-xl">
+                      <p className="text-sm text-gray-600 mb-1">
+                        Last Exam Score
+                      </p>
+                      <p className="font-medium text-gray-800">-</p>
                     </div>
                   </div>
                 </div>
@@ -250,18 +277,18 @@ const InhouseStudentDashboard = () => {
 
       case "certificates":
         return (
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <h2 className="text-2xl font-bold text-[#164758] mb-6">
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-[#164758]">
               My Certificates
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {studentData.myCourses?.map((course, index) => (
                 <div
                   key={index}
-                  className="bg-white rounded-lg shadow-sm border border-gray-100 p-4"
+                  className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-gray-800">
+                    <h3 className="font-semibold text-lg text-gray-800">
                       {course.course?.title}
                     </h3>
                     <FaGraduationCap className="h-6 w-6 text-[#00965f]" />
@@ -274,8 +301,9 @@ const InhouseStudentDashboard = () => {
                   </p>
                   {Math.round((course.paidFee / course.finalPrice) * 100) >=
                     100 && (
-                    <button className="w-full bg-[#00965f] text-white py-2 rounded-md hover:bg-[#008551] transition-colors">
-                      Download Certificate
+                    <button className="w-full bg-[#00965f] text-white py-3 rounded-xl hover:bg-[#008551] transition-colors flex items-center justify-center space-x-2">
+                      <FaDownload className="h-4 w-4" />
+                      <span>Download Certificate</span>
                     </button>
                   )}
                 </div>
@@ -290,27 +318,40 @@ const InhouseStudentDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <header className="mb-8">
-          <h1 className="text-3xl font-bold text-[#164758] mb-2">
-            Welcome, {studentData.name}!
-          </h1>
-          <p className="text-gray-600">Here's your learning dashboard</p>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-[#164758] mb-2">
+                Welcome, {studentData.name}!
+              </h1>
+              <p className="text-gray-600">Here's your learning dashboard</p>
+            </div>
+            <div className="mt-4 sm:mt-0">
+              <button
+                onClick={() => setActiveSection("courses")}
+                className="inline-flex items-center px-4 py-2 bg-[#00965f] text-white rounded-xl hover:bg-[#008551] transition-colors"
+              >
+                <FaBook className="mr-2 h-4 w-4" />
+                View Courses
+              </button>
+            </div>
+          </div>
         </header>
 
         {/* Navigation Tabs */}
         <div className="mb-8">
           <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
+            <nav className="-mb-px flex flex-wrap gap-4 sm:gap-8">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveSection(tab.id)}
-                    className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${
+                    className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                       activeSection === tab.id
                         ? "border-[#00965f] text-[#164758]"
                         : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
