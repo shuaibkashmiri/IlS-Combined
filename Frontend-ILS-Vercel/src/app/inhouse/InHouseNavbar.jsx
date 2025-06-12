@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "@/redux/features/inhouseSlice";
 import { useRouter, usePathname } from "next/navigation";
 import {
   FaUser,
@@ -14,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { toast } from "sonner";
 import Image from "next/image";
+import { clearState } from "@/redux/features/inhouseSlice";
 
 const InHouseNavbar = () => {
   const dispatch = useDispatch();
@@ -35,11 +35,31 @@ const InHouseNavbar = () => {
 
   const handleLogout = async () => {
     try {
-      await dispatch(logout());
+      // Clear Redux state first
+      dispatch(clearState());
+
+      // Clear localStorage
+      localStorage.removeItem("inHouseStudent");
+
+      // Clear any cookies
+      document.cookie.split(";").forEach((c) => {
+        document.cookie = c
+          .replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+
+      // Close the user menu
+      setIsUserMenuOpen(false);
+
+      // Show success message
       toast.success("Logged out successfully");
-      router.push("/inhouse/student/login");
+
+      // Use setTimeout to ensure state is cleared before navigation
+      setTimeout(() => {
+        router.push("/inhouse/student/login");
+      }, 100);
     } catch (error) {
-      toast.error(error.message || "Failed to logout");
+      toast.error("Failed to logout");
     }
   };
 

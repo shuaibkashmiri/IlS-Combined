@@ -154,13 +154,13 @@ const inhouseSlice = createSlice({
       state.message = null;
       state.error = null;
     },
-    logout: (state) => {
-      state.currentStudent = null;
+    clearState: (state) => {
       state.studentDetails = null;
+      state.currentStudent = null;
       state.loading = false;
       state.error = null;
-      // Clear localStorage
-      localStorage.removeItem("inHouseStudent");
+      state.message = null;
+      state.isAuthenticated = false;
     },
   },
   extraReducers: (builder) => {
@@ -259,5 +259,5 @@ const inhouseSlice = createSlice({
   },
 });
 
-export const { resetMessage, logout } = inhouseSlice.actions;
+export const { resetMessage, clearState } = inhouseSlice.actions;
 export default inhouseSlice.reducer;

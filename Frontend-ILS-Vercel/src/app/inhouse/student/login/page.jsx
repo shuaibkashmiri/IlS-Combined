@@ -2,10 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  offlineStudentLogin,
-  resetMessage,
-} from "@/redux/features/inhouseSlice";
+import { offlineStudentLogin } from "@/redux/features/inhouseSlice";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -26,9 +23,6 @@ const OfflineStudentLogin = () => {
     if (isAuthenticated) {
       router.push("/inhouse/student/dashboard");
     }
-    return () => {
-      dispatch(resetMessage());
-    };
   }, [isAuthenticated, router, dispatch]);
 
   const handleChange = (e) => {
