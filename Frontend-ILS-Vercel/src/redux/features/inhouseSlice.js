@@ -101,6 +101,26 @@ export const offlineStudentLogin = createAsyncThunk(
   }
 );
 
+// Get Inhouse Student Details
+export const getInhouseStudentDetails = createAsyncThunk(
+  "inhouse/getStudentDetails",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/get-offline-student-details`,
+        {
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to fetch student details" }
+      );
+    }
+  }
+);
+
 const initialState = {
   offlineCourses: [],
   offlineStudents: [],
@@ -109,6 +129,7 @@ const initialState = {
   message: null,
   currentStudent: null,
   isAuthenticated: false,
+  studentDetails: null,
 };
 
 const inhouseSlice = createSlice({
@@ -121,7 +142,11 @@ const inhouseSlice = createSlice({
     },
     logout: (state) => {
       state.currentStudent = null;
-      state.isAuthenticated = false;
+      state.studentDetails = null;
+      state.loading = false;
+      state.error = null;
+      // Clear localStorage
+      localStorage.removeItem("inHouseStudent");
     },
   },
   extraReducers: (builder) => {
@@ -192,11 +217,29 @@ const inhouseSlice = createSlice({
         state.currentStudent = action.payload.student;
         state.isAuthenticated = true;
         state.message = "Login successful";
+        // The student details will be fetched in the component after login
       })
       .addCase(offlineStudentLogin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message || "Login failed";
         state.isAuthenticated = false;
+      })
+      // Get Inhouse Student Details
+      .addCase(getInhouseStudentDetails.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getInhouseStudentDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.studentDetails = action.payload;
+        state.error = null;
+        // Save to localStorage
+        localStorage.setItem("inHouseStudent", JSON.stringify(action.payload));
+        state.message = "Student details fetched successfully";
+      })
+      .addCase(getInhouseStudentDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
   },
 });

@@ -1337,6 +1337,8 @@ const InhouseAdminDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("basic");
   const [courseType, setCourseType] = useState("Short Term");
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageError, setImageError] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -1528,18 +1530,11 @@ const InhouseAdminDashboard = () => {
         }
       });
 
-      // Log FormData contents for debugging
-      for (let pair of formDataToSend.entries()) {
-        console.log(
-          pair[0] + ": " + (pair[1] instanceof File ? pair[1].name : pair[1])
-        );
-      }
-
       const response = await dispatch(
         addOfflineStudent(formDataToSend)
       ).unwrap();
 
-      // Close modal and reset form regardless of response structure
+      // Close modal and reset form
       setIsModalOpen(false);
       setStudentFormData({
         name: "",
@@ -1567,8 +1562,14 @@ const InhouseAdminDashboard = () => {
         gender: "",
         status: "active",
       });
-      setImagePreview(null);
-      setImageError("");
+
+      // Reset image preview and error
+      if (setImagePreview) {
+        setImagePreview(null);
+      }
+      if (setImageError) {
+        setImageError("");
+      }
 
       // Show success message
       toast.success("Student added successfully!");
