@@ -71,18 +71,23 @@ const InHouseNavbar = () => {
   ];
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-100">
+    <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <Image
-              src="/logo.png"
-              alt="ILS Logo"
-              width={120}
-              height={40}
-              className="h-8 w-auto"
-            />
+            <button
+              onClick={() => router.push("/")}
+              className="focus:outline-none"
+            >
+              <Image
+                src="/logo.png"
+                alt="ILS Logo"
+                width={120}
+                height={40}
+                className="h-8 w-auto"
+              />
+            </button>
           </div>
 
           {/* Navigation Links */}

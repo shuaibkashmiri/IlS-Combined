@@ -123,18 +123,27 @@ const DropdownForm = () => {
       </div>
 
       {/* Header */}
-      <header className="absolute top-0 left-0 w-full z-20 py-4 px-4 md:px-8">
+      <header className="fixed top-0 left-0 w-full z-50 py-4 px-4 md:px-8 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100">
         <div className="container mx-auto flex items-center justify-between">
           {/* Logo Placeholder */}
           <div className="text-emerald-600 w-25">
-            <img src="/logo.png" alt="ILS Logo" className="md:ml-18" />
+            <button
+              onClick={() => (window.location.href = "/")}
+              className="focus:outline-none"
+            >
+              <img
+                src="/logo.png"
+                alt="ILS Logo"
+                className="md:ml-18 h-8 w-auto"
+              />
+            </button>
           </div>
 
           {/* Mobile Menu Button and In-House Link */}
           <div className="md:hidden flex items-center gap-4">
             <a
               href="/inhouse/student/login"
-              className="hover:text-grey-600 transition-colors bg-emerald-600 p-1 px-2 rounded-2xl text-white text-sm"
+              className="hover:text-grey-600 transition-colors bg-gradient-to-r from-emerald-500 to-green-500 p-2 px-3 rounded-2xl text-white text-sm"
             >
               In-House
             </a>
@@ -189,7 +198,7 @@ const DropdownForm = () => {
             </a>
             <a
               href="/inhouse/student/login"
-              className="hover:text-grey-600 transition-colors bg-emerald-600 p-1 px-2 rounded-2xl  text-white"
+              className="hover:text-grey-600 transition-colors bg-gradient-to-r from-emerald-500 to-green-500 p-2 rounded-2xl text-white"
             >
               In-House
             </a>
@@ -230,8 +239,8 @@ const DropdownForm = () => {
         </AnimatePresence>
       </header>
 
-      {/* Hero Section */}
-      <div className="container py-24 relative z-10 flex items-center min-h-screen">
+      {/* Hero Section - Add padding-top to account for fixed header */}
+      <div className="container pt-32 pb-24 relative z-10 flex items-center min-h-screen">
         <div className="max-w-7xl md:ml-24 flex flex-col lg:flex-row items-center justify-between gap-16">
           {/* Left Side - Country/State Dropdown Form */}
           <motion.div
