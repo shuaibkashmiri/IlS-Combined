@@ -106,16 +106,11 @@ export const getInhouseStudentDetails = createAsyncThunk(
   "inhouse/getStudentDetails",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/get-offline-student-details`,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get("/get-offline-student-details");
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || { message: "Failed to fetch student details" }
+        error.response?.data?.message || "Failed to fetch student details"
       );
     }
   }
@@ -131,6 +126,20 @@ const initialState = {
   isAuthenticated: false,
   studentDetails: null,
 };
+
+// Load initial state from localStorage if available
+if (typeof window !== "undefined") {
+  const storedStudent = localStorage.getItem("inHouseStudent");
+  if (storedStudent) {
+    try {
+      const parsedData = JSON.parse(storedStudent);
+      initialState.studentDetails = parsedData.student;
+      initialState.currentStudent = parsedData.student;
+    } catch (error) {
+      console.error("Error parsing stored student data:", error);
+    }
+  }
+}
 
 const inhouseSlice = createSlice({
   name: "inhouse",
@@ -231,7 +240,8 @@ const inhouseSlice = createSlice({
       })
       .addCase(getInhouseStudentDetails.fulfilled, (state, action) => {
         state.loading = false;
-        state.studentDetails = action.payload;
+        state.studentDetails = action.payload.student;
+        state.currentStudent = action.payload.student;
         state.error = null;
         // Save to localStorage
         localStorage.setItem("inHouseStudent", JSON.stringify(action.payload));
@@ -239,7 +249,7 @@ const inhouseSlice = createSlice({
       })
       .addCase(getInhouseStudentDetails.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       });
   },
 });

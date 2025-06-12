@@ -1,373 +1,161 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { FaBars, FaTimes, FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
-import { handleLogout } from "../../utils/logout";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "@/redux/features/inhouseSlice";
+import { useRouter, usePathname } from "next/navigation";
+import {
+  FaUser,
+  FaSignOutAlt,
+  FaInfoCircle,
+  FaGraduationCap,
+  FaPhoneAlt,
+  FaHome,
+} from "react-icons/fa";
+import { toast } from "sonner";
 import Image from "next/image";
 
 const InHouseNavbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [studentData, setStudentData] = useState(null);
+  const dispatch = useDispatch();
+  const router = useRouter();
   const pathname = usePathname();
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { studentDetails } = useSelector((state) => state.inhouse);
 
   useEffect(() => {
-    // Get student data from localStorage
-    const storedStudent = localStorage.getItem("inHouseStudent");
-    if (storedStudent) {
-      setStudentData(JSON.parse(storedStudent));
-    }
+    setMounted(true);
   }, []);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+  if (!mounted) return null;
+
+  const studentData =
+    studentDetails || JSON.parse(localStorage.getItem("inHouseStudent"));
+  const isLoggedIn = !!studentData;
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(logout()).unwrap();
+      toast.success("Logged out successfully");
+      router.push("/inhouse/login");
+    } catch (error) {
+      toast.error(error.message || "Failed to logout");
+    }
   };
 
-  const toggleUserMenu = () => {
-    setIsUserMenuOpen(!isUserMenuOpen);
-  };
+  const navLinks = [
+    { href: "/", label: "Home", icon: FaHome },
+    { href: "/about", label: "About Us", icon: FaInfoCircle },
+    { href: "/services", label: "Services", icon: FaGraduationCap },
+    { href: "/contact", label: "Contact", icon: FaPhoneAlt },
+  ];
 
-  const isActive = (path) => {
-    return pathname === path;
-  };
-
-  // Default navbar for non-logged in users
-  if (!studentData) {
-    return (
-      <nav className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            {/* Logo */}
-            <div className="flex-shrink-0 flex items-center">
-              <Link href="/" className="text-2xl font-bold text-[#164758]">
-                <img src="/logo.png" className="w-20" alt="" />
-              </Link>
-            </div>
-
-            {/* Desktop Navigation */}
-            <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-8">
-              <Link
-                href="/about"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  isActive("/about")
-                    ? "border-[#00965f] text-[#164758]"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                About
-              </Link>
-              <Link
-                href="/services"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  isActive("/services")
-                    ? "border-[#00965f] text-[#164758]"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Services
-              </Link>
-              <Link
-                href="/contact"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  isActive("/contact")
-                    ? "border-[#00965f] text-[#164758]"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Contact
-              </Link>
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="flex items-center sm:hidden">
-              <button
-                onClick={toggleMobileMenu}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#00965f]"
-              >
-                <span className="sr-only">Open main menu</span>
-                {isMobileMenuOpen ? (
-                  <FaTimes className="block h-6 w-6" />
-                ) : (
-                  <FaBars className="block h-6 w-6" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile menu */}
-        {isMobileMenuOpen && (
-          <div className="sm:hidden">
-            <div className="pt-2 pb-3 space-y-1">
-              <Link
-                href="/about"
-                className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
-                  isActive("/about")
-                    ? "border-[#00965f] text-[#164758] bg-[#00965f]/10"
-                    : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                About
-              </Link>
-              <Link
-                href="/services"
-                className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
-                  isActive("/services")
-                    ? "border-[#00965f] text-[#164758] bg-[#00965f]/10"
-                    : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Services
-              </Link>
-              <Link
-                href="/contact"
-                className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
-                  isActive("/contact")
-                    ? "border-[#00965f] text-[#164758] bg-[#00965f]/10"
-                    : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Contact
-              </Link>
-            </div>
-          </div>
-        )}
-      </nav>
-    );
-  }
-
-  // Logged in navbar
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-white shadow-sm border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          {/* Logo and Desktop Navigation */}
-          <div className="flex">
-            <div className="flex-shrink-0 flex items-center">
-              <Link
-                href="/inhouse"
-                className="text-2xl font-bold text-[#164758]"
-              >
-                ILS
-              </Link>
-            </div>
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <Link
-                href="/inhouse/student/dashboard"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  isActive("/inhouse/student/dashboard")
-                    ? "border-[#00965f] text-[#164758]"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/inhouse/student/courses"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  isActive("/inhouse/student/courses")
-                    ? "border-[#00965f] text-[#164758]"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                My Courses
-              </Link>
-              <Link
-                href="/inhouse/student/exams"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  isActive("/inhouse/student/exams")
-                    ? "border-[#00965f] text-[#164758]"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Exams
-              </Link>
-              <Link
-                href="/inhouse/student/certificates"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  isActive("/inhouse/student/certificates")
-                    ? "border-[#00965f] text-[#164758]"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Certificates
-              </Link>
-            </div>
+          {/* Logo */}
+          <div className="flex-shrink-0 flex items-center">
+            <Image
+              src="/logo.png"
+              alt="ILS Logo"
+              width={120}
+              height={40}
+              className="h-8 w-auto"
+            />
           </div>
 
-          {/* User Menu */}
-          <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            <div className="relative">
-              <button
-                onClick={toggleUserMenu}
-                className="flex items-center space-x-3 text-gray-700 hover:text-[#164758] focus:outline-none"
-              >
-                <span className="text-sm font-medium">{studentData.name}</span>
-                <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-[#00965f]">
-                  {studentData.profilePicture ? (
-                    <Image
-                      src={studentData.profilePicture}
-                      alt={studentData.name}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-[#00965f] flex items-center justify-center">
-                      <FaUser className="h-4 w-4 text-white" />
-                    </div>
-                  )}
-                </div>
-              </button>
-
-              {isUserMenuOpen && (
-                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                  <div
-                    className="py-1"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="user-menu"
-                  >
-                    <Link
-                      href="/inhouse/student/profile"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      role="menuitem"
-                    >
-                      <FaUser className="mr-2 h-4 w-4" />
-                      Profile
-                    </Link>
-                    <Link
-                      href="/inhouse/student/settings"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      role="menuitem"
-                    >
-                      <FaCog className="mr-2 h-4 w-4" />
-                      Settings
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      role="menuitem"
-                    >
-                      <FaSignOutAlt className="mr-2 h-4 w-4" />
-                      Sign out
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+          {/* Navigation Links */}
+          <div className="hidden md:flex items-center space-x-4">
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              const isActive = pathname === link.href;
+              return (
+                <button
+                  key={link.href}
+                  onClick={() => router.push(link.href)}
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-[#00965f]/10 text-[#164758]"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-[#164758]"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{link.label}</span>
+                </button>
+              );
+            })}
           </div>
 
-          {/* Mobile menu button */}
-          <div className="flex items-center sm:hidden">
-            <button
-              onClick={toggleMobileMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#00965f]"
-            >
-              <span className="sr-only">Open main menu</span>
-              {isMobileMenuOpen ? (
-                <FaTimes className="block h-6 w-6" />
-              ) : (
-                <FaBars className="block h-6 w-6" />
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile menu */}
-      {isMobileMenuOpen && (
-        <div className="sm:hidden">
-          <div className="pt-2 pb-3 space-y-1">
-            <Link
-              href="/inhouse/student/dashboard"
-              className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
-                isActive("/inhouse/student/dashboard")
-                  ? "border-[#00965f] text-[#164758] bg-[#00965f]/10"
-                  : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
-              }`}
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/inhouse/student/courses"
-              className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
-                isActive("/inhouse/student/courses")
-                  ? "border-[#00965f] text-[#164758] bg-[#00965f]/10"
-                  : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
-              }`}
-            >
-              My Courses
-            </Link>
-            <Link
-              href="/inhouse/student/exams"
-              className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
-                isActive("/inhouse/student/exams")
-                  ? "border-[#00965f] text-[#164758] bg-[#00965f]/10"
-                  : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
-              }`}
-            >
-              Exams
-            </Link>
-            <Link
-              href="/inhouse/student/certificates"
-              className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
-                isActive("/inhouse/student/certificates")
-                  ? "border-[#00965f] text-[#164758] bg-[#00965f]/10"
-                  : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
-              }`}
-            >
-              Certificates
-            </Link>
-            <div className="border-t border-gray-200 pt-4 pb-3">
-              <div className="flex items-center px-4">
-                <div className="flex-shrink-0">
-                  <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-[#00965f]">
-                    {studentData.profilePicture ? (
+          {/* User Menu or Login Button */}
+          {isLoggedIn ? (
+            <div className="flex items-center">
+              <div className="relative">
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center space-x-3 focus:outline-none"
+                >
+                  <div className="relative h-10 w-10 rounded-full overflow-hidden border-2 border-[#00965f]">
+                    {studentData?.profileImage ? (
                       <Image
-                        src={studentData.profilePicture}
+                        src={studentData.profileImage}
                         alt={studentData.name}
                         fill
                         className="object-cover"
                       />
                     ) : (
                       <div className="w-full h-full bg-[#00965f] flex items-center justify-center">
-                        <FaUser className="h-5 w-5 text-white" />
+                        <span className="text-lg font-medium text-white">
+                          {studentData?.name?.charAt(0)?.toUpperCase() || "U"}
+                        </span>
                       </div>
                     )}
                   </div>
-                </div>
-                <div className="ml-3">
-                  <div className="text-base font-medium text-gray-800">
-                    {studentData.name}
-                  </div>
-                </div>
-              </div>
-              <div className="mt-3 space-y-1">
-                <Link
-                  href="/inhouse/student/profile"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
-                >
-                  Profile
-                </Link>
-                <Link
-                  href="/inhouse/student/settings"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
-                >
-                  Settings
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="block w-full text-left px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
-                >
-                  Sign out
+                  <span className="text-sm font-medium text-gray-700">
+                    {studentData?.name || "User"}
+                  </span>
                 </button>
+
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                    <div className="py-1">
+                      <button
+                        onClick={() => {
+                          setIsUserMenuOpen(false);
+                          router.push("/inhouse/student/profile");
+                        }}
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
+                      >
+                        <FaUser className="mr-3 h-4 w-4" />
+                        Profile
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsUserMenuOpen(false);
+                          handleLogout();
+                        }}
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
+                      >
+                        <FaSignOutAlt className="mr-3 h-4 w-4" />
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => router.push("/inhouse/login")}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#00965f] hover:bg-[#008551] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00965f]"
+              >
+                Login
+              </button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </nav>
   );
 };
