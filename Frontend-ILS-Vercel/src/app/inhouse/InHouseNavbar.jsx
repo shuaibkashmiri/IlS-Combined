@@ -35,9 +35,9 @@ const InHouseNavbar = () => {
 
   const handleLogout = async () => {
     try {
-      await dispatch(logout()).unwrap();
+      await dispatch(logout());
       toast.success("Logged out successfully");
-      router.push("/inhouse/login");
+      router.push("/inhouse/student/login");
     } catch (error) {
       toast.error(error.message || "Failed to logout");
     }
@@ -147,7 +147,7 @@ const InHouseNavbar = () => {
           ) : (
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => router.push("/inhouse/login")}
+                onClick={() => router.push("/inhouse/student/login")}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#00965f] hover:bg-[#008551] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00965f]"
               >
                 Login

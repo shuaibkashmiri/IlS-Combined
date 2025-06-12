@@ -106,7 +106,12 @@ export const getInhouseStudentDetails = createAsyncThunk(
   "inhouse/getStudentDetails",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get("/get-offline-student-details");
+      const response = await axios.get(
+        `${BASE_URL}/get-offline-student-details`,
+        {
+          withCredentials: true,
+        }
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(
