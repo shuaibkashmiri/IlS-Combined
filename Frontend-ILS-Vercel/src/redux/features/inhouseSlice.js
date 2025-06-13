@@ -121,6 +121,43 @@ export const getInhouseStudentDetails = createAsyncThunk(
   }
 );
 
+export const createVideo = createAsyncThunk(
+  "inhouse/createVideo",
+  async (formData, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/add-video`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          dispatch(setUploadProgress(percentCompleted));
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getVideos = createAsyncThunk(
+  "inhouse/getVideos",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/get-videos`, {
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const initialState = {
   offlineCourses: [],
   offlineStudents: [],
@@ -130,6 +167,12 @@ const initialState = {
   currentStudent: null,
   isAuthenticated: false,
   studentDetails: null,
+  videos: [],
+  videoLoading: false,
+  videoError: null,
+  uploadProgress: 0,
+  getVideosLoading: false,
+  getVideosError: null,
 };
 
 // Load initial state from localStorage if available
@@ -161,6 +204,9 @@ const inhouseSlice = createSlice({
       state.error = null;
       state.message = null;
       state.isAuthenticated = false;
+    },
+    setUploadProgress: (state, action) => {
+      state.uploadProgress = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -255,9 +301,41 @@ const inhouseSlice = createSlice({
       .addCase(getInhouseStudentDetails.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(createVideo.pending, (state) => {
+        state.videoLoading = true;
+        state.videoError = null;
+        state.uploadProgress = 0;
+      })
+      .addCase(createVideo.fulfilled, (state, action) => {
+        state.videoLoading = false;
+        state.videos.push(action.payload.video);
+        state.uploadProgress = 100;
+      })
+      .addCase(createVideo.rejected, (state, action) => {
+        state.videoLoading = false;
+        state.videoError = action.payload?.error || "Failed to upload video";
+        state.uploadProgress = 0;
+      })
+      .addCase(getVideos.pending, (state) => {
+        state.getVideosLoading = true;
+        state.getVideosError = null;
+      })
+      .addCase(getVideos.fulfilled, (state, action) => {
+        state.getVideosLoading = false;
+        state.videos = action.payload.videos;
+      })
+      .addCase(getVideos.rejected, (state, action) => {
+        state.getVideosLoading = false;
+        state.getVideosError =
+          action.payload?.error || "Failed to fetch videos";
       });
   },
 });
 
-export const { resetMessage, clearState } = inhouseSlice.actions;
+export const {
+  resetMessage,
+  clearState,
+  setUploadProgress,
+} = inhouseSlice.actions;
 export default inhouseSlice.reducer;
