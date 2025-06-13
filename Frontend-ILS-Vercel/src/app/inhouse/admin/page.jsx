@@ -59,6 +59,8 @@ const CoursesSection = ({
 }) => {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageError, setImageError] = useState("");
 
   const handleViewDetails = (course) => {
     setSelectedCourse(course);
@@ -71,6 +73,33 @@ const CoursesSection = ({
         student.myCourses?.some((course) => course.course?._id === courseId)
       ) || []
     );
+  };
+
+  const handleThumbnailChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setImageError("File size should be less than 5MB");
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        setImageError("Please upload an image file");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+      setFormData(prev => ({ ...prev, thumbnail: file }));
+      setImageError("");
+    }
+  };
+
+  const removeThumbnail = () => {
+    setImagePreview(null);
+    setFormData(prev => ({ ...prev, thumbnail: null }));
+    setImageError("");
   };
 
   return (
@@ -523,6 +552,400 @@ const CoursesSection = ({
                   </div>
                 )}
 
+                {/* Semesters Section */}
+                {activeSection === "semesters" && courseType === "Long Term" && (
+                  <div className="space-y-6">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-lg font-semibold text-gray-800">Semesters</h3>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData(prev => ({
+                            ...prev,
+                            semesters: [
+                              ...prev.semesters,
+                              {
+                                name: "",
+                                number: "",
+                                subjects: [
+                                  {
+                                    name: "",
+                                    code: "",
+                                    description: "",
+                                    exams: [
+                                      {
+                                        name: "",
+                                        date: "",
+                                        totalMarks: "",
+                                        passingMarks: "",
+                                        description: "",
+                                      },
+                                    ],
+                                  },
+                                ],
+                              },
+                            ],
+                          }));
+                        }}
+                        className="px-4 py-2 bg-[#00965f] text-white rounded-lg hover:bg-[#007f4f] transition-colors flex items-center gap-2"
+                      >
+                        <FaPlus className="h-4 w-4" />
+                        Add Semester
+                      </button>
+                    </div>
+
+                    {formData.semesters.map((semester, semesterIndex) => (
+                      <div key={semesterIndex} className="bg-gray-50 p-6 rounded-lg space-y-4">
+                        <div className="flex justify-between items-center">
+                          <h4 className="text-md font-semibold text-gray-700">Semester {semesterIndex + 1}</h4>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setFormData(prev => ({
+                                ...prev,
+                                semesters: prev.semesters.filter((_, index) => index !== semesterIndex),
+                              }));
+                            }}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <FaTrash className="h-4 w-4" />
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block mb-2 font-medium text-gray-700">
+                              Semester Name
+                            </label>
+                            <input
+                              type="text"
+                              value={semester.name}
+                              onChange={(e) => {
+                                const newSemesters = [...formData.semesters];
+                                newSemesters[semesterIndex].name = e.target.value;
+                                setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                              }}
+                              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                              placeholder="e.g., First Semester"
+                            />
+                          </div>
+                          <div>
+                            <label className="block mb-2 font-medium text-gray-700">
+                              Semester Number
+                            </label>
+                            <input
+                              type="number"
+                              value={semester.number}
+                              onChange={(e) => {
+                                const newSemesters = [...formData.semesters];
+                                newSemesters[semesterIndex].number = e.target.value;
+                                setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                              }}
+                              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                              placeholder="e.g., 1"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Subjects Section */}
+                        <div className="mt-6">
+                          <div className="flex justify-between items-center mb-4">
+                            <h5 className="text-md font-semibold text-gray-700">Subjects</h5>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newSemesters = [...formData.semesters];
+                                newSemesters[semesterIndex].subjects.push({
+                                  name: "",
+                                  code: "",
+                                  description: "",
+                                  exams: [
+                                    {
+                                      name: "",
+                                      date: "",
+                                      totalMarks: "",
+                                      passingMarks: "",
+                                      description: "",
+                                    },
+                                  ],
+                                });
+                                setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                              }}
+                              className="px-3 py-1.5 bg-[#00965f] text-white rounded-lg hover:bg-[#007f4f] transition-colors flex items-center gap-2 text-sm"
+                            >
+                              <FaPlus className="h-3 w-3" />
+                              Add Subject
+                            </button>
+                          </div>
+
+                          {semester.subjects.map((subject, subjectIndex) => (
+                            <div key={subjectIndex} className="bg-white p-4 rounded-lg space-y-4 mb-4">
+                              <div className="flex justify-between items-center">
+                                <h6 className="text-sm font-semibold text-gray-700">Subject {subjectIndex + 1}</h6>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newSemesters = [...formData.semesters];
+                                    newSemesters[semesterIndex].subjects = newSemesters[semesterIndex].subjects.filter(
+                                      (_, index) => index !== subjectIndex
+                                    );
+                                    setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                  }}
+                                  className="text-red-500 hover:text-red-700"
+                                >
+                                  <FaTrash className="h-3 w-3" />
+                                </button>
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                  <label className="block mb-2 font-medium text-gray-700">
+                                    Subject Name
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={subject.name}
+                                    onChange={(e) => {
+                                      const newSemesters = [...formData.semesters];
+                                      newSemesters[semesterIndex].subjects[subjectIndex].name = e.target.value;
+                                      setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                    }}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                                    placeholder="e.g., Mathematics"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block mb-2 font-medium text-gray-700">
+                                    Subject Code
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={subject.code}
+                                    onChange={(e) => {
+                                      const newSemesters = [...formData.semesters];
+                                      newSemesters[semesterIndex].subjects[subjectIndex].code = e.target.value;
+                                      setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                    }}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                                    placeholder="e.g., MATH101"
+                                  />
+                                </div>
+                              </div>
+
+                              <div>
+                                <label className="block mb-2 font-medium text-gray-700">
+                                  Subject Description
+                                </label>
+                                <textarea
+                                  value={subject.description}
+                                  onChange={(e) => {
+                                    const newSemesters = [...formData.semesters];
+                                    newSemesters[semesterIndex].subjects[subjectIndex].description = e.target.value;
+                                    setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                  }}
+                                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                                  rows="3"
+                                  placeholder="Enter subject description"
+                                />
+                              </div>
+
+                              {/* Exams Section */}
+                              <div className="mt-4">
+                                <div className="flex justify-between items-center mb-4">
+                                  <h6 className="text-sm font-semibold text-gray-700">Exams</h6>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const newSemesters = [...formData.semesters];
+                                      newSemesters[semesterIndex].subjects[subjectIndex].exams.push({
+                                        name: "",
+                                        date: "",
+                                        totalMarks: "",
+                                        passingMarks: "",
+                                        description: "",
+                                      });
+                                      setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                    }}
+                                    className="px-3 py-1.5 bg-[#00965f] text-white rounded-lg hover:bg-[#007f4f] transition-colors flex items-center gap-2 text-sm"
+                                  >
+                                    <FaPlus className="h-3 w-3" />
+                                    Add Exam
+                                  </button>
+                                </div>
+
+                                {subject.exams.map((exam, examIndex) => (
+                                  <div key={examIndex} className="bg-gray-50 p-4 rounded-lg space-y-4 mb-4">
+                                    <div className="flex justify-between items-center">
+                                      <h6 className="text-sm font-semibold text-gray-700">Exam {examIndex + 1}</h6>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const newSemesters = [...formData.semesters];
+                                          newSemesters[semesterIndex].subjects[subjectIndex].exams = newSemesters[semesterIndex].subjects[subjectIndex].exams.filter(
+                                            (_, index) => index !== examIndex
+                                          );
+                                          setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                        }}
+                                        className="text-red-500 hover:text-red-700"
+                                      >
+                                        <FaTrash className="h-3 w-3" />
+                                      </button>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div>
+                                        <label className="block mb-2 font-medium text-gray-700">
+                                          Exam Name
+                                        </label>
+                                        <input
+                                          type="text"
+                                          value={exam.name}
+                                          onChange={(e) => {
+                                            const newSemesters = [...formData.semesters];
+                                            newSemesters[semesterIndex].subjects[subjectIndex].exams[examIndex].name = e.target.value;
+                                            setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                          }}
+                                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                                          placeholder="e.g., Mid Term"
+                                        />
+                                      </div>
+                                      <div>
+                                        <label className="block mb-2 font-medium text-gray-700">
+                                          Exam Date
+                                        </label>
+                                        <input
+                                          type="date"
+                                          value={exam.date}
+                                          onChange={(e) => {
+                                            const newSemesters = [...formData.semesters];
+                                            newSemesters[semesterIndex].subjects[subjectIndex].exams[examIndex].date = e.target.value;
+                                            setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                          }}
+                                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                                        />
+                                      </div>
+                                      <div>
+                                        <label className="block mb-2 font-medium text-gray-700">
+                                          Total Marks
+                                        </label>
+                                        <input
+                                          type="number"
+                                          value={exam.totalMarks}
+                                          onChange={(e) => {
+                                            const newSemesters = [...formData.semesters];
+                                            newSemesters[semesterIndex].subjects[subjectIndex].exams[examIndex].totalMarks = e.target.value;
+                                            setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                          }}
+                                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                                          placeholder="e.g., 100"
+                                        />
+                                      </div>
+                                      <div>
+                                        <label className="block mb-2 font-medium text-gray-700">
+                                          Passing Marks
+                                        </label>
+                                        <input
+                                          type="number"
+                                          value={exam.passingMarks}
+                                          onChange={(e) => {
+                                            const newSemesters = [...formData.semesters];
+                                            newSemesters[semesterIndex].subjects[subjectIndex].exams[examIndex].passingMarks = e.target.value;
+                                            setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                          }}
+                                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                                          placeholder="e.g., 40"
+                                        />
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <label className="block mb-2 font-medium text-gray-700">
+                                        Exam Description
+                                      </label>
+                                      <textarea
+                                        value={exam.description}
+                                        onChange={(e) => {
+                                          const newSemesters = [...formData.semesters];
+                                          newSemesters[semesterIndex].subjects[subjectIndex].exams[examIndex].description = e.target.value;
+                                          setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                        }}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                                        rows="2"
+                                        placeholder="Enter exam description"
+                                      />
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Thumbnail Section */}
+                {activeSection === "thumbnail" && (
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block mb-2 font-medium text-gray-700">
+                        Course Thumbnail
+                      </label>
+                      <div className="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
+                        <div className="space-y-1 text-center">
+                          {imagePreview ? (
+                            <div className="relative inline-block">
+                              <img
+                                src={imagePreview}
+                                alt="Course thumbnail preview"
+                                className="w-48 h-48 object-cover rounded-lg"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setImagePreview(null);
+                                  setFormData(prev => ({ ...prev, thumbnail: null }));
+                                }}
+                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                              >
+                                <FaTimes className="h-3 w-3" />
+                              </button>
+                            </div>
+                          ) : (
+                            <>
+                              <FaUpload className="mx-auto h-12 w-12 text-gray-400" />
+                              <div className="flex text-sm text-gray-600">
+                                <label
+                                  htmlFor="thumbnail-upload"
+                                  className="relative cursor-pointer bg-white rounded-md font-medium text-[#00965f] hover:text-[#007f4f] focus-within:outline-none"
+                                >
+                                  <span>Upload a file</span>
+                                  <input
+                                    id="thumbnail-upload"
+                                    name="thumbnail"
+                                    type="file"
+                                    accept="image/*"
+                                    className="sr-only"
+                                    onChange={handleThumbnailChange}
+                                  />
+                                </label>
+                                <p className="pl-1">or drag and drop</p>
+                              </div>
+                              <p className="text-xs text-gray-500">
+                                PNG, JPG, GIF up to 5MB
+                              </p>
+                            </>
+                          )}
+                          {imageError && (
+                            <p className="text-sm text-red-500 mt-2">{imageError}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Submit Button */}
                 <div className="flex justify-end">
                   <button
@@ -707,8 +1130,10 @@ const StudentsSection = ({
             </div>
           ) : (
             <div className="text-center py-8">
-              <FaUsers className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 mb-2">No students enrolled yet</p>
+              <FaUsers className="h-12 w-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500 text-lg mb-2">
+                No students enrolled yet
+              </p>
               <p className="text-gray-400">
                 Start by adding your first student
               </p>
