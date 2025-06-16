@@ -147,7 +147,7 @@ const InHouseNavbar = () => {
                       <button
                         onClick={() => {
                           setIsUserMenuOpen(false);
-                          router.push("/inhouse/student/profile");
+                          router.push("/inhouse/student/dashboard");
                         }}
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
                       >
@@ -170,14 +170,7 @@ const InHouseNavbar = () => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => router.push("/inhouse/student/login")}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#00965f] hover:bg-[#008551] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00965f]"
-              >
-                Login
-              </button>
-            </div>
+            <div className="flex items-center space-x-4"></div>
           )}
         </div>
       </div>

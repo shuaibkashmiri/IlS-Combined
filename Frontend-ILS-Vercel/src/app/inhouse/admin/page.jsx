@@ -1441,6 +1441,8 @@ const InhouseAdminDashboard = () => {
   });
   const [uploadProgress, setUploadProgress] = useState(0);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const [isVideoPlayerOpen, setIsVideoPlayerOpen] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState(null);
 
   useEffect(() => {
     setMounted(true);
@@ -1723,6 +1725,43 @@ const InhouseAdminDashboard = () => {
       course: "",
       documentFile: null,
     });
+  };
+
+  const formatVideoUrl = (url) => {
+    if (!url) return null;
+
+    // Handle YouTube URLs
+    if (url.includes("youtube.com") || url.includes("youtu.be")) {
+      let videoId = "";
+
+      if (url.includes("youtube.com/watch")) {
+        const urlParams = new URLSearchParams(new URL(url).search);
+        videoId = urlParams.get("v");
+      } else if (url.includes("youtu.be")) {
+        videoId = url.split("/").pop();
+      }
+
+      if (videoId) {
+        return `https://www.youtube.com/embed/${videoId}`;
+      }
+    }
+
+    // Handle Vimeo URLs
+    if (url.includes("vimeo.com")) {
+      const videoId = url.split("/").pop();
+      return `https://player.vimeo.com/video/${videoId}`;
+    }
+
+    // Return original URL for other video sources
+    return url;
+  };
+
+  const handlePlayVideo = (video) => {
+    console.log("Original URL:", video.videoUrl);
+    const formattedUrl = formatVideoUrl(video.videoUrl);
+    console.log("Formatted URL:", formattedUrl);
+    setSelectedVideo({ ...video, formattedUrl });
+    setIsVideoPlayerOpen(true);
   };
 
   if (!mounted) {
@@ -2278,10 +2317,7 @@ const InhouseAdminDashboard = () => {
                                 <td className="px-6 py-4">
                                   <div className="flex items-center gap-3">
                                     <button
-                                      onClick={() => {
-                                        // Handle play video
-                                        window.open(video.videoUrl, "_blank");
-                                      }}
+                                      onClick={() => handlePlayVideo(video)}
                                       className="p-2 text-gray-500 hover:text-[#00965f] transition-colors"
                                       title="Play Video"
                                     >
@@ -2716,6 +2752,60 @@ const InhouseAdminDashboard = () => {
               className="bg-[#00965f] h-2 rounded-full transition-all duration-300"
               style={{ width: `${uploadProgress}%` }}
             ></div>
+          </div>
+        </div>
+      )}
+
+      {/* Video Player Modal */}
+      {isVideoPlayerOpen && selectedVideo && (
+        <div className="fixed inset-0 backdrop-blur-md bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-4xl">
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-800">
+                {selectedVideo.title}
+              </h2>
+              <button
+                onClick={() => {
+                  setIsVideoPlayerOpen(false);
+                  setSelectedVideo(null);
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <FaTimes className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-4">
+              <div className="relative aspect-video w-full bg-black rounded-lg overflow-hidden">
+                {selectedVideo.formattedUrl ? (
+                  <iframe
+                    src={selectedVideo.formattedUrl}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    frameBorder="0"
+                  ></iframe>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <p className="text-white">Video URL not available</p>
+                  </div>
+                )}
+              </div>
+              <div className="mt-4">
+                <h3 className="font-semibold text-gray-800 mb-2">
+                  {selectedVideo.title}
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  {selectedVideo.description}
+                </p>
+                <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <span>Course: {selectedVideo.course?.title}</span>
+                  <span>
+                    Uploaded:{" "}
+                    {new Date(selectedVideo.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

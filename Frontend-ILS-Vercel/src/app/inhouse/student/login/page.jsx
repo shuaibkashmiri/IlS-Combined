@@ -20,10 +20,11 @@ const OfflineStudentLogin = () => {
   );
 
   useEffect(() => {
-    if (isAuthenticated) {
+    const storedStudent = localStorage.getItem("inHouseStudent");
+    if (storedStudent || isAuthenticated) {
       router.push("/inhouse/student/dashboard");
     }
-  }, [isAuthenticated, router, dispatch]);
+  }, [isAuthenticated, router]);
 
   const handleChange = (e) => {
     setFormData({
