@@ -9,6 +9,8 @@ import {
   addOfflineStudent,
   createVideo,
   getVideos,
+  giveDiscount,
+  payFee,
 } from "../../../redux/features/inhouseSlice";
 import {
   FaBook,
@@ -28,6 +30,9 @@ import {
   FaPlay,
   FaTrash,
   FaEdit,
+  FaEye,
+  FaTag,
+  FaMoneyBill,
 } from "react-icons/fa";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -91,14 +96,14 @@ const CoursesSection = ({
         setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
-      setFormData(prev => ({ ...prev, thumbnail: file }));
+      setFormData((prev) => ({ ...prev, thumbnail: file }));
       setImageError("");
     }
   };
 
   const removeThumbnail = () => {
     setImagePreview(null);
-    setFormData(prev => ({ ...prev, thumbnail: null }));
+    setFormData((prev) => ({ ...prev, thumbnail: null }));
     setImageError("");
   };
 
@@ -556,11 +561,13 @@ const CoursesSection = ({
                 {activeSection === "semesters" && courseType === "Long Term" && (
                   <div className="space-y-6">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-lg font-semibold text-gray-800">Semesters</h3>
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        Semesters
+                      </h3>
                       <button
                         type="button"
                         onClick={() => {
-                          setFormData(prev => ({
+                          setFormData((prev) => ({
                             ...prev,
                             semesters: [
                               ...prev.semesters,
@@ -595,15 +602,22 @@ const CoursesSection = ({
                     </div>
 
                     {formData.semesters.map((semester, semesterIndex) => (
-                      <div key={semesterIndex} className="bg-gray-50 p-6 rounded-lg space-y-4">
+                      <div
+                        key={semesterIndex}
+                        className="bg-gray-50 p-6 rounded-lg space-y-4"
+                      >
                         <div className="flex justify-between items-center">
-                          <h4 className="text-md font-semibold text-gray-700">Semester {semesterIndex + 1}</h4>
+                          <h4 className="text-md font-semibold text-gray-700">
+                            Semester {semesterIndex + 1}
+                          </h4>
                           <button
                             type="button"
                             onClick={() => {
-                              setFormData(prev => ({
+                              setFormData((prev) => ({
                                 ...prev,
-                                semesters: prev.semesters.filter((_, index) => index !== semesterIndex),
+                                semesters: prev.semesters.filter(
+                                  (_, index) => index !== semesterIndex
+                                ),
                               }));
                             }}
                             className="text-red-500 hover:text-red-700"
@@ -622,8 +636,12 @@ const CoursesSection = ({
                               value={semester.name}
                               onChange={(e) => {
                                 const newSemesters = [...formData.semesters];
-                                newSemesters[semesterIndex].name = e.target.value;
-                                setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                newSemesters[semesterIndex].name =
+                                  e.target.value;
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  semesters: newSemesters,
+                                }));
                               }}
                               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
                               placeholder="e.g., First Semester"
@@ -638,8 +656,12 @@ const CoursesSection = ({
                               value={semester.number}
                               onChange={(e) => {
                                 const newSemesters = [...formData.semesters];
-                                newSemesters[semesterIndex].number = e.target.value;
-                                setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                newSemesters[semesterIndex].number =
+                                  e.target.value;
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  semesters: newSemesters,
+                                }));
                               }}
                               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
                               placeholder="e.g., 1"
@@ -650,7 +672,9 @@ const CoursesSection = ({
                         {/* Subjects Section */}
                         <div className="mt-6">
                           <div className="flex justify-between items-center mb-4">
-                            <h5 className="text-md font-semibold text-gray-700">Subjects</h5>
+                            <h5 className="text-md font-semibold text-gray-700">
+                              Subjects
+                            </h5>
                             <button
                               type="button"
                               onClick={() => {
@@ -669,7 +693,10 @@ const CoursesSection = ({
                                     },
                                   ],
                                 });
-                                setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  semesters: newSemesters,
+                                }));
                               }}
                               className="px-3 py-1.5 bg-[#00965f] text-white rounded-lg hover:bg-[#007f4f] transition-colors flex items-center gap-2 text-sm"
                             >
@@ -679,17 +706,31 @@ const CoursesSection = ({
                           </div>
 
                           {semester.subjects.map((subject, subjectIndex) => (
-                            <div key={subjectIndex} className="bg-white p-4 rounded-lg space-y-4 mb-4">
+                            <div
+                              key={subjectIndex}
+                              className="bg-white p-4 rounded-lg space-y-4 mb-4"
+                            >
                               <div className="flex justify-between items-center">
-                                <h6 className="text-sm font-semibold text-gray-700">Subject {subjectIndex + 1}</h6>
+                                <h6 className="text-sm font-semibold text-gray-700">
+                                  Subject {subjectIndex + 1}
+                                </h6>
                                 <button
                                   type="button"
                                   onClick={() => {
-                                    const newSemesters = [...formData.semesters];
-                                    newSemesters[semesterIndex].subjects = newSemesters[semesterIndex].subjects.filter(
+                                    const newSemesters = [
+                                      ...formData.semesters,
+                                    ];
+                                    newSemesters[
+                                      semesterIndex
+                                    ].subjects = newSemesters[
+                                      semesterIndex
+                                    ].subjects.filter(
                                       (_, index) => index !== subjectIndex
                                     );
-                                    setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      semesters: newSemesters,
+                                    }));
                                   }}
                                   className="text-red-500 hover:text-red-700"
                                 >
@@ -706,9 +747,16 @@ const CoursesSection = ({
                                     type="text"
                                     value={subject.name}
                                     onChange={(e) => {
-                                      const newSemesters = [...formData.semesters];
-                                      newSemesters[semesterIndex].subjects[subjectIndex].name = e.target.value;
-                                      setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                      const newSemesters = [
+                                        ...formData.semesters,
+                                      ];
+                                      newSemesters[semesterIndex].subjects[
+                                        subjectIndex
+                                      ].name = e.target.value;
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        semesters: newSemesters,
+                                      }));
                                     }}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
                                     placeholder="e.g., Mathematics"
@@ -722,9 +770,16 @@ const CoursesSection = ({
                                     type="text"
                                     value={subject.code}
                                     onChange={(e) => {
-                                      const newSemesters = [...formData.semesters];
-                                      newSemesters[semesterIndex].subjects[subjectIndex].code = e.target.value;
-                                      setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                      const newSemesters = [
+                                        ...formData.semesters,
+                                      ];
+                                      newSemesters[semesterIndex].subjects[
+                                        subjectIndex
+                                      ].code = e.target.value;
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        semesters: newSemesters,
+                                      }));
                                     }}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
                                     placeholder="e.g., MATH101"
@@ -739,9 +794,16 @@ const CoursesSection = ({
                                 <textarea
                                   value={subject.description}
                                   onChange={(e) => {
-                                    const newSemesters = [...formData.semesters];
-                                    newSemesters[semesterIndex].subjects[subjectIndex].description = e.target.value;
-                                    setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                    const newSemesters = [
+                                      ...formData.semesters,
+                                    ];
+                                    newSemesters[semesterIndex].subjects[
+                                      subjectIndex
+                                    ].description = e.target.value;
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      semesters: newSemesters,
+                                    }));
                                   }}
                                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
                                   rows="3"
@@ -752,19 +814,28 @@ const CoursesSection = ({
                               {/* Exams Section */}
                               <div className="mt-4">
                                 <div className="flex justify-between items-center mb-4">
-                                  <h6 className="text-sm font-semibold text-gray-700">Exams</h6>
+                                  <h6 className="text-sm font-semibold text-gray-700">
+                                    Exams
+                                  </h6>
                                   <button
                                     type="button"
                                     onClick={() => {
-                                      const newSemesters = [...formData.semesters];
-                                      newSemesters[semesterIndex].subjects[subjectIndex].exams.push({
+                                      const newSemesters = [
+                                        ...formData.semesters,
+                                      ];
+                                      newSemesters[semesterIndex].subjects[
+                                        subjectIndex
+                                      ].exams.push({
                                         name: "",
                                         date: "",
                                         totalMarks: "",
                                         passingMarks: "",
                                         description: "",
                                       });
-                                      setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        semesters: newSemesters,
+                                      }));
                                     }}
                                     className="px-3 py-1.5 bg-[#00965f] text-white rounded-lg hover:bg-[#007f4f] transition-colors flex items-center gap-2 text-sm"
                                   >
@@ -774,17 +845,31 @@ const CoursesSection = ({
                                 </div>
 
                                 {subject.exams.map((exam, examIndex) => (
-                                  <div key={examIndex} className="bg-gray-50 p-4 rounded-lg space-y-4 mb-4">
+                                  <div
+                                    key={examIndex}
+                                    className="bg-gray-50 p-4 rounded-lg space-y-4 mb-4"
+                                  >
                                     <div className="flex justify-between items-center">
-                                      <h6 className="text-sm font-semibold text-gray-700">Exam {examIndex + 1}</h6>
+                                      <h6 className="text-sm font-semibold text-gray-700">
+                                        Exam {examIndex + 1}
+                                      </h6>
                                       <button
                                         type="button"
                                         onClick={() => {
-                                          const newSemesters = [...formData.semesters];
-                                          newSemesters[semesterIndex].subjects[subjectIndex].exams = newSemesters[semesterIndex].subjects[subjectIndex].exams.filter(
+                                          const newSemesters = [
+                                            ...formData.semesters,
+                                          ];
+                                          newSemesters[semesterIndex].subjects[
+                                            subjectIndex
+                                          ].exams = newSemesters[
+                                            semesterIndex
+                                          ].subjects[subjectIndex].exams.filter(
                                             (_, index) => index !== examIndex
                                           );
-                                          setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                          setFormData((prev) => ({
+                                            ...prev,
+                                            semesters: newSemesters,
+                                          }));
                                         }}
                                         className="text-red-500 hover:text-red-700"
                                       >
@@ -801,9 +886,18 @@ const CoursesSection = ({
                                           type="text"
                                           value={exam.name}
                                           onChange={(e) => {
-                                            const newSemesters = [...formData.semesters];
-                                            newSemesters[semesterIndex].subjects[subjectIndex].exams[examIndex].name = e.target.value;
-                                            setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                            const newSemesters = [
+                                              ...formData.semesters,
+                                            ];
+                                            newSemesters[
+                                              semesterIndex
+                                            ].subjects[subjectIndex].exams[
+                                              examIndex
+                                            ].name = e.target.value;
+                                            setFormData((prev) => ({
+                                              ...prev,
+                                              semesters: newSemesters,
+                                            }));
                                           }}
                                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
                                           placeholder="e.g., Mid Term"
@@ -817,9 +911,18 @@ const CoursesSection = ({
                                           type="date"
                                           value={exam.date}
                                           onChange={(e) => {
-                                            const newSemesters = [...formData.semesters];
-                                            newSemesters[semesterIndex].subjects[subjectIndex].exams[examIndex].date = e.target.value;
-                                            setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                            const newSemesters = [
+                                              ...formData.semesters,
+                                            ];
+                                            newSemesters[
+                                              semesterIndex
+                                            ].subjects[subjectIndex].exams[
+                                              examIndex
+                                            ].date = e.target.value;
+                                            setFormData((prev) => ({
+                                              ...prev,
+                                              semesters: newSemesters,
+                                            }));
                                           }}
                                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
                                         />
@@ -832,9 +935,18 @@ const CoursesSection = ({
                                           type="number"
                                           value={exam.totalMarks}
                                           onChange={(e) => {
-                                            const newSemesters = [...formData.semesters];
-                                            newSemesters[semesterIndex].subjects[subjectIndex].exams[examIndex].totalMarks = e.target.value;
-                                            setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                            const newSemesters = [
+                                              ...formData.semesters,
+                                            ];
+                                            newSemesters[
+                                              semesterIndex
+                                            ].subjects[subjectIndex].exams[
+                                              examIndex
+                                            ].totalMarks = e.target.value;
+                                            setFormData((prev) => ({
+                                              ...prev,
+                                              semesters: newSemesters,
+                                            }));
                                           }}
                                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
                                           placeholder="e.g., 100"
@@ -848,9 +960,18 @@ const CoursesSection = ({
                                           type="number"
                                           value={exam.passingMarks}
                                           onChange={(e) => {
-                                            const newSemesters = [...formData.semesters];
-                                            newSemesters[semesterIndex].subjects[subjectIndex].exams[examIndex].passingMarks = e.target.value;
-                                            setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                            const newSemesters = [
+                                              ...formData.semesters,
+                                            ];
+                                            newSemesters[
+                                              semesterIndex
+                                            ].subjects[subjectIndex].exams[
+                                              examIndex
+                                            ].passingMarks = e.target.value;
+                                            setFormData((prev) => ({
+                                              ...prev,
+                                              semesters: newSemesters,
+                                            }));
                                           }}
                                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
                                           placeholder="e.g., 40"
@@ -865,9 +986,17 @@ const CoursesSection = ({
                                       <textarea
                                         value={exam.description}
                                         onChange={(e) => {
-                                          const newSemesters = [...formData.semesters];
-                                          newSemesters[semesterIndex].subjects[subjectIndex].exams[examIndex].description = e.target.value;
-                                          setFormData(prev => ({ ...prev, semesters: newSemesters }));
+                                          const newSemesters = [
+                                            ...formData.semesters,
+                                          ];
+                                          newSemesters[semesterIndex].subjects[
+                                            subjectIndex
+                                          ].exams[examIndex].description =
+                                            e.target.value;
+                                          setFormData((prev) => ({
+                                            ...prev,
+                                            semesters: newSemesters,
+                                          }));
                                         }}
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
                                         rows="2"
@@ -905,7 +1034,10 @@ const CoursesSection = ({
                                 type="button"
                                 onClick={() => {
                                   setImagePreview(null);
-                                  setFormData(prev => ({ ...prev, thumbnail: null }));
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    thumbnail: null,
+                                  }));
                                 }}
                                 className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
                               >
@@ -938,7 +1070,9 @@ const CoursesSection = ({
                             </>
                           )}
                           {imageError && (
-                            <p className="text-sm text-red-500 mt-2">{imageError}</p>
+                            <p className="text-sm text-red-500 mt-2">
+                              {imageError}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -974,12 +1108,30 @@ const StudentsSection = ({
   formData,
   setFormData,
   handleInputChange,
+  dispatch,
 }) => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [imageError, setImageError] = useState("");
   const [selectedCourseDetails, setSelectedCourseDetails] = useState(null);
+
+  // Discount modal state
+  const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
+  const [discountAmount, setDiscountAmount] = useState("");
+  const [discountLoading, setDiscountLoading] = useState(false);
+  const [discountError, setDiscountError] = useState("");
+  const [discountStudent, setDiscountStudent] = useState(null);
+  const [discountCourse, setDiscountCourse] = useState(null);
+  // Pay Fee modal state
+  const [isPayFeeModalOpen, setIsPayFeeModalOpen] = useState(false);
+  const [payFeeAmount, setPayFeeAmount] = useState("");
+  const [payFeeLoading, setPayFeeLoading] = useState(false);
+  const [payFeeError, setPayFeeError] = useState("");
+  const [payFeeStudent, setPayFeeStudent] = useState(null);
+  const [payFeeCourse, setPayFeeCourse] = useState(null);
+  // Add this state at the top of StudentsSection
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleViewDetails = (student) => {
     setSelectedStudent(student);
@@ -1118,9 +1270,38 @@ const StudentsSection = ({
                       <td className="py-4">
                         <button
                           onClick={() => handleViewDetails(student)}
-                          className="px-3 py-1.5 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                          className="p-2 text-gray-500 hover:text-[#00965f] transition-colors"
+                          title="View Details"
                         >
-                          View Details
+                          <FaEye className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setDiscountStudent(student);
+                            setDiscountCourse(student?.myCourses?.[0]?.course);
+                            setDiscountAmount(
+                              student?.myCourses?.[0]?.discount || ""
+                            );
+                            setDiscountError("");
+                            setIsDiscountModalOpen(true);
+                          }}
+                          className="p-2 text-gray-500 hover:text-yellow-600 transition-colors ml-2"
+                          title="Give Discount"
+                        >
+                          <FaTag className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setPayFeeStudent(student);
+                            setPayFeeCourse(student?.myCourses?.[0]?.course);
+                            setPayFeeAmount("");
+                            setPayFeeError("");
+                            setIsPayFeeModalOpen(true);
+                          }}
+                          className="p-2 text-gray-500 hover:text-green-600 transition-colors ml-2"
+                          title="Pay Fee"
+                        >
+                          <FaMoneyBill className="h-4 w-4" />
                         </button>
                       </td>
                     </tr>
@@ -1310,13 +1491,22 @@ const StudentsSection = ({
                         <p className="font-medium text-red-600">
                           ₹
                           {(
-                            course.finalPrice - course.paidFee
+                            (course.finalPrice || 0) -
+                            ((course.paidFee || 0) + (course.discount || 0))
                           )?.toLocaleString()}
                         </p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Installments</p>
                         <p className="font-medium">{course.installments}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-600">
+                          Paid Installments
+                        </p>
+                        <p className="font-medium">
+                          {course.paidInstallments || 0}
+                        </p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Progress</p>
@@ -1330,6 +1520,12 @@ const StudentsSection = ({
                             }}
                           ></div>
                         </div>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-600">Discount</p>
+                        <p className="font-medium text-green-700">
+                          ₹{course.discount || 0}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -1744,6 +1940,42 @@ const StudentsSection = ({
                       />
                     </div>
                   </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block mb-2 font-medium text-gray-700">
+                        Final Price
+                      </label>
+                      <input
+                        type="number"
+                        name="myCourses.finalPrice"
+                        value={
+                          selectedCourseDetails
+                            ? selectedCourseDetails.fee || 0
+                            : 0
+                        }
+                        readOnly
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                      />
+                    </div>
+                  </div>
+                  {/* Pending Fee Calculation */}
+                  <div className="mt-2">
+                    <label className="block mb-1 font-medium text-gray-700">
+                      Pending Fee
+                    </label>
+                    <div className="px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 font-semibold">
+                      ₹
+                      {(() => {
+                        const finalPrice = selectedCourseDetails
+                          ? selectedCourseDetails.fee || 0
+                          : 0;
+                        const paidFee = Number(formData.myCourses.paidFee) || 0;
+                        const regFee = Number(formData.myCourses.regFee) || 0;
+                        const pending = finalPrice - (paidFee + regFee);
+                        return pending > 0 ? pending.toLocaleString() : 0;
+                      })()}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Submit Button */}
@@ -1757,6 +1989,244 @@ const StudentsSection = ({
                 </div>
               </form>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Discount Modal */}
+      {isDiscountModalOpen && discountStudent && discountCourse && (
+        <div className="fixed inset-0 backdrop-blur-md bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-800">
+                Give Discount
+              </h2>
+              <button
+                onClick={() => setIsDiscountModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <FaTimes className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-6">
+              <div className="mb-4">
+                <p className="mb-1 text-gray-700">
+                  <span className="font-semibold">{discountStudent.name}</span>{" "}
+                  —{" "}
+                  <span className="font-semibold">{discountCourse.title}</span>
+                </p>
+                <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-700 space-y-1">
+                  <div>
+                    Course Fee:{" "}
+                    <span className="font-semibold">
+                      ₹
+                      {discountStudent?.myCourses?.[0]?.finalPrice?.toLocaleString() ||
+                        0}
+                    </span>
+                  </div>
+                  <div>
+                    Paid Fee:{" "}
+                    <span className="font-semibold">
+                      ₹
+                      {discountStudent?.myCourses?.[0]?.paidFee?.toLocaleString() ||
+                        0}
+                    </span>
+                  </div>
+                  <div>
+                    Pending Fee:{" "}
+                    <span className="font-semibold text-red-600">
+                      ₹
+                      {(
+                        (discountStudent?.myCourses?.[0]?.finalPrice || 0) -
+                        ((discountStudent?.myCourses?.[0]?.paidFee || 0) +
+                          (discountStudent?.myCourses?.[0]?.discount || 0))
+                      )?.toLocaleString()}
+                    </span>
+                  </div>
+                  <div>
+                    Current Discount:{" "}
+                    <span className="font-semibold text-green-700">
+                      ₹{discountStudent?.myCourses?.[0]?.discount || 0}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setDiscountLoading(true);
+                  setDiscountError("");
+                  try {
+                    await dispatch(
+                      giveDiscount({
+                        studentId: discountStudent._id,
+                        courseId: discountCourse._id,
+                        discountAmount: Number(discountAmount),
+                      })
+                    ).unwrap();
+                    // Show toast
+                    toast.success("Discount applied successfully!");
+                    // Refresh students list
+                    await dispatch(fetchOfflineStudents());
+                    setIsDiscountModalOpen(false);
+                    setDiscountLoading(false);
+                  } catch (err) {
+                    setDiscountError(err?.error || "Failed to apply discount");
+                    setDiscountLoading(false);
+                  }
+                }}
+                className="space-y-4"
+              >
+                <label className="block mb-2 font-medium text-gray-700">
+                  Discount Amount
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={discountAmount}
+                  onChange={(e) => setDiscountAmount(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                  required
+                />
+                {discountError && (
+                  <p className="text-sm text-red-500">{discountError}</p>
+                )}
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-[#00965f] text-white rounded-lg hover:bg-[#007f4f] transition-colors disabled:opacity-50"
+                    disabled={discountLoading}
+                  >
+                    {discountLoading ? "Applying..." : "Apply Discount"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Pay Fee Modal */}
+      {isPayFeeModalOpen && payFeeStudent && payFeeCourse && (
+        <div className="fixed inset-0 backdrop-blur-md bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-800">Pay Fee</h2>
+              <button
+                onClick={() => setIsPayFeeModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <FaTimes className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-6">
+              <div className="mb-4">
+                <p className="mb-1 text-gray-700">
+                  <span className="font-semibold">{payFeeStudent.name}</span> —{" "}
+                  <span className="font-semibold">{payFeeCourse.title}</span>
+                </p>
+                <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-700 space-y-1">
+                  <div>
+                    Course Fee:{" "}
+                    <span className="font-semibold">
+                      ₹
+                      {payFeeStudent?.myCourses?.[0]?.finalPrice?.toLocaleString() ||
+                        0}
+                    </span>
+                  </div>
+                  <div>
+                    Paid Fee:{" "}
+                    <span className="font-semibold">
+                      ₹
+                      {payFeeStudent?.myCourses?.[0]?.paidFee?.toLocaleString() ||
+                        0}
+                    </span>
+                  </div>
+                  <div>
+                    Pending Fee:{" "}
+                    <span className="font-semibold text-red-600">
+                      ₹
+                      {(
+                        (payFeeStudent?.myCourses?.[0]?.finalPrice || 0) -
+                        ((payFeeStudent?.myCourses?.[0]?.paidFee || 0) +
+                          (payFeeStudent?.myCourses?.[0]?.discount || 0))
+                      )?.toLocaleString()}
+                    </span>
+                  </div>
+                  <div>
+                    Discount:{" "}
+                    <span className="font-semibold text-green-700">
+                      ₹{payFeeStudent?.myCourses?.[0]?.discount || 0}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setPayFeeLoading(true);
+                  setPayFeeError("");
+                  try {
+                    await dispatch(
+                      payFee({
+                        studentId: payFeeStudent._id,
+                        courseId: payFeeCourse._id,
+                        amountPaid: Number(payFeeAmount),
+                      })
+                    ).unwrap();
+                    toast.success("Fee payment processed successfully!");
+                    await dispatch(fetchOfflineStudents());
+                    setIsPayFeeModalOpen(false);
+                    setPayFeeLoading(false);
+                  } catch (err) {
+                    setPayFeeError(
+                      err?.error || "Failed to process fee payment"
+                    );
+                    setPayFeeLoading(false);
+                  }
+                }}
+                className="space-y-4"
+              >
+                <label className="block mb-2 font-medium text-gray-700">
+                  Amount to Pay
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={payFeeAmount}
+                  onChange={(e) => setPayFeeAmount(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                  required
+                />
+                {payFeeError && (
+                  <p className="text-sm text-red-500">{payFeeError}</p>
+                )}
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-[#00965f] text-white rounded-lg hover:bg-[#007f4f] transition-colors disabled:opacity-50"
+                    disabled={payFeeLoading}
+                  >
+                    {payFeeLoading ? "Processing..." : "Pay Fee"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-xl shadow-lg p-8 max-w-sm w-full flex flex-col items-center">
+            <h2 className="text-2xl font-bold text-green-600 mb-4">
+              Student added successfully!
+            </h2>
+            <button
+              onClick={() => setShowSuccessModal(false)}
+              className="mt-4 px-6 py-2 bg-[#00965f] text-white rounded-lg hover:bg-[#007f4f] transition-colors"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -1994,17 +2464,31 @@ const InhouseAdminDashboard = () => {
   const handleStudentSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Add registration fee to paid fee before sending
+      const updatedStudentFormData = { ...studentFormData };
+      if (
+        updatedStudentFormData.myCourses &&
+        typeof updatedStudentFormData.myCourses.paidFee === "number" &&
+        typeof updatedStudentFormData.myCourses.regFee === "number"
+      ) {
+        updatedStudentFormData.myCourses.paidFee =
+          updatedStudentFormData.myCourses.paidFee +
+          updatedStudentFormData.myCourses.regFee;
+      }
       const formDataToSend = new FormData();
 
       // Append all form fields
-      Object.keys(studentFormData).forEach((key) => {
+      Object.keys(updatedStudentFormData).forEach((key) => {
         if (key === "myCourses" || key === "academicDetails") {
-          formDataToSend.append(key, JSON.stringify(studentFormData[key]));
-        } else if (key === "profileImage" && studentFormData[key]) {
+          formDataToSend.append(
+            key,
+            JSON.stringify(updatedStudentFormData[key])
+          );
+        } else if (key === "profileImage" && updatedStudentFormData[key]) {
           // Append the file with the correct field name for multer
-          formDataToSend.append("profileImage", studentFormData[key]);
+          formDataToSend.append("profileImage", updatedStudentFormData[key]);
         } else {
-          formDataToSend.append(key, studentFormData[key]);
+          formDataToSend.append(key, updatedStudentFormData[key]);
         }
       });
 
@@ -2054,6 +2538,7 @@ const InhouseAdminDashboard = () => {
 
       // Refresh the students list
       dispatch(fetchOfflineStudents());
+      setShowSuccessModal(true);
     } catch (error) {
       console.error("Error adding student:", error);
       toast.error(error.message || "Failed to add student");
@@ -2406,17 +2891,30 @@ const InhouseAdminDashboard = () => {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm font-medium text-gray-600">
-                            Total Fee
+                            Total Pending Fee
                           </p>
                           <h3 className="text-3xl font-bold text-gray-900 mt-2">
                             ₹
-                            {offlineStudents
-                              ?.reduce(
-                                (total, student) =>
-                                  total + (student?.myCourses?.finalPrice || 0),
+                            {(() => {
+                              const allCourses =
+                                offlineStudents?.flatMap(
+                                  (student) => student.myCourses || []
+                                ) || [];
+                              const totalFinalPrice = allCourses.reduce(
+                                (sum, course) => sum + (course.finalPrice || 0),
                                 0
-                              )
-                              .toLocaleString()}
+                              );
+                              const totalPaidAndDiscount = allCourses.reduce(
+                                (sum, course) =>
+                                  sum +
+                                  (course.paidFee || 0) +
+                                  (course.discount || 0),
+                                0
+                              );
+                              return (
+                                totalFinalPrice - totalPaidAndDiscount
+                              ).toLocaleString();
+                            })()}
                           </h3>
                         </div>
                         <div className="bg-[#00965f]/10 p-4 rounded-xl">
@@ -2431,11 +2929,13 @@ const InhouseAdminDashboard = () => {
                             Total Installments
                           </p>
                           <h3 className="text-3xl font-bold text-gray-900 mt-2">
-                            {offlineStudents?.reduce(
-                              (total, student) =>
-                                total + (student?.myCourses?.installments || 0),
-                              0
-                            )}
+                            {offlineStudents
+                              ?.flatMap((student) => student.myCourses || [])
+                              .reduce(
+                                (total, course) =>
+                                  total + (course.installments || 0),
+                                0
+                              )}
                           </h3>
                         </div>
                         <div className="bg-purple-50 p-4 rounded-xl">
@@ -2450,23 +2950,13 @@ const InhouseAdminDashboard = () => {
                             Paid Installments
                           </p>
                           <h3 className="text-3xl font-bold text-gray-900 mt-2">
-                            {offlineStudents?.reduce((total, student) => {
-                              const studentInstallments =
-                                student?.myCourses?.installments || 0;
-                              const paidFee =
-                                parseFloat(student?.myCourses?.paidFee) || 0;
-                              const finalPrice =
-                                parseFloat(student?.myCourses?.finalPrice) || 0;
-                              return (
-                                total +
-                                (paidFee > 0
-                                  ? Math.floor(
-                                      (paidFee / finalPrice) *
-                                        studentInstallments
-                                    )
-                                  : 0)
-                              );
-                            }, 0)}
+                            {offlineStudents
+                              ?.flatMap((student) => student.myCourses || [])
+                              .reduce(
+                                (total, course) =>
+                                  total + (course.paidInstallments || 0),
+                                0
+                              )}
                           </h3>
                         </div>
                         <div className="bg-orange-50 p-4 rounded-xl">
@@ -2631,6 +3121,7 @@ const InhouseAdminDashboard = () => {
                   formData={studentFormData}
                   setFormData={setStudentFormData}
                   handleInputChange={handleStudentInputChange}
+                  dispatch={dispatch}
                 />
               )}
 

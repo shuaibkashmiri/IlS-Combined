@@ -158,6 +158,44 @@ export const getVideos = createAsyncThunk(
   }
 );
 
+// Give Discount to Student
+export const giveDiscount = createAsyncThunk(
+  "inhouse/giveDiscount",
+  async ({ studentId, courseId, discountAmount }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/give-discount`,
+        { studentId, courseId, discountAmount },
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { error: "Failed to apply discount" }
+      );
+    }
+  }
+);
+
+// Pay Fee for Student
+export const payFee = createAsyncThunk(
+  "inhouse/payFee",
+  async ({ studentId, courseId, amountPaid }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/pay-fee`,
+        { studentId, courseId, amountPaid },
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { error: "Failed to process fee payment" }
+      );
+    }
+  }
+);
+
 const initialState = {
   offlineCourses: [],
   offlineStudents: [],
@@ -329,6 +367,53 @@ const inhouseSlice = createSlice({
         state.getVideosLoading = false;
         state.getVideosError =
           action.payload?.error || "Failed to fetch videos";
+      })
+      .addCase(giveDiscount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(giveDiscount.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message =
+          action.payload.message || "Discount applied successfully";
+        // Update the student in offlineStudents
+        const updatedStudent = action.payload.student;
+        if (updatedStudent && state.offlineStudents) {
+          const idx = state.offlineStudents.findIndex(
+            (s) => s._id === updatedStudent._id
+          );
+          if (idx !== -1) {
+            state.offlineStudents[idx] = updatedStudent;
+          }
+        }
+      })
+      .addCase(giveDiscount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.error || "Failed to apply discount";
+      })
+      // Pay Fee Cases
+      .addCase(payFee.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(payFee.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message =
+          action.payload.message || "Fee payment processed successfully";
+        // Update the student in offlineStudents
+        const updatedStudent = action.payload.student;
+        if (updatedStudent && state.offlineStudents) {
+          const idx = state.offlineStudents.findIndex(
+            (s) => s._id === updatedStudent._id
+          );
+          if (idx !== -1) {
+            state.offlineStudents[idx] = updatedStudent;
+          }
+        }
+      })
+      .addCase(payFee.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.error || "Failed to process fee payment";
       });
   },
 });
