@@ -44,7 +44,10 @@ export const registerUser = createAsyncThunk(
   "user/register",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BASE_URL}/api/auth/register`, formData);
+      const response = await axios.post(
+        `${BASE_URL}/api/auth/register`,
+        formData
+      );
       if (isBrowser)
         localStorage.setItem("user", JSON.stringify(response.data.user));
       return response.data;
@@ -178,7 +181,10 @@ export const initiateTeachingApplication = createAsyncThunk(
   "user/initiateTeachingApplication",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BASE_URL}/api/teach/initiate`, formData);
+      const response = await axios.post(
+        `${BASE_URL}/api/teach/initiate`,
+        formData
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -321,9 +327,6 @@ const userSlice = createSlice({
         localStorage.removeItem("user");
         localStorage.removeItem("instructor");
         sessionStorage.removeItem("user");
-        Cookies.remove("token");
-        Cookies.remove("token", { path: "/" });
-        Cookies.remove("token", { path: "/banglore/instructor" });
       }
     },
     resetInstructorRegistration: (state) => {

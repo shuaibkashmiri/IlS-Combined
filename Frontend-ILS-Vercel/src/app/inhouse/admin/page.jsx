@@ -11,6 +11,7 @@ import {
   getVideos,
   giveDiscount,
   payFee,
+  addExam,
 } from "../../../redux/features/inhouseSlice";
 import {
   FaBook,
@@ -38,6 +39,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
+import { logoutUser } from "../../../redux/features/userSlice";
 
 // Loading state component
 const LoadingState = () => (
@@ -2234,6 +2236,416 @@ const StudentsSection = ({
   );
 };
 
+// Exams Component
+const ExamsSection = ({ offlineCourses, dispatch }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    date: "",
+    totalMarks: "",
+    passingMarks: "",
+    description: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [localCourses, setLocalCourses] = useState(offlineCourses);
+
+  useEffect(() => {
+    setLocalCourses(offlineCourses);
+  }, [offlineCourses]);
+
+  const handleCourseChange = (e) => {
+    setSelectedCourseId(e.target.value);
+    setSelectedSemester("");
+  };
+
+  const handleSemesterChange = (e) => {
+    setSelectedSemester(e.target.value);
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess("");
+    try {
+      const course = localCourses.find((c) => c._id === selectedCourseId);
+      const payload = {
+        courseId: selectedCourseId,
+        name: formData.name,
+        date: formData.date,
+        totalMarks: formData.totalMarks,
+        passingMarks: formData.passingMarks,
+        description: formData.description,
+      };
+      let newExam = {
+        name: formData.name,
+        date: formData.date,
+        totalMarks: formData.totalMarks,
+        passingMarks: formData.passingMarks,
+        description: formData.description,
+      };
+      if (course && course.semesters && course.semesters.length > 0) {
+        const semester = course.semesters.find(
+          (s) => s.number == selectedSemester || s.name === selectedSemester
+        );
+        if (semester) {
+          payload.semesterNumber = semester.number;
+          payload.semesterName = semester.name;
+        }
+      }
+      await dispatch(addExam(payload)).unwrap();
+      setLocalCourses((prevCourses) => {
+        return prevCourses.map((c) => {
+          if (c._id !== selectedCourseId) return c;
+          if (c.semesters && c.semesters.length > 0 && selectedSemester) {
+            return {
+              ...c,
+              semesters: c.semesters.map((s) => {
+                if (
+                  s.number == selectedSemester ||
+                  s.name === selectedSemester
+                ) {
+                  return {
+                    ...s,
+                    exams: [...(s.exams || []), newExam],
+                  };
+                }
+                return s;
+              }),
+            };
+          } else {
+            return {
+              ...c,
+              exams: [...(c.exams || []), newExam],
+            };
+          }
+        });
+      });
+      setSuccess("Exam added successfully");
+      setIsModalOpen(false);
+      setFormData({
+        name: "",
+        date: "",
+        totalMarks: "",
+        passingMarks: "",
+        description: "",
+      });
+      setSelectedCourseId("");
+      setSelectedSemester("");
+    } catch (err) {
+      setError(err?.message || "Failed to add exam");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-10">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-extrabold text-[#164758] flex items-center gap-3 tracking-tight">
+          <FaCalendarAlt className="h-8 w-8 text-[#00965f]" /> Exams
+        </h1>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="px-6 py-3 bg-gradient-to-r from-[#00965f] to-[#007f4f] text-white rounded-xl shadow-lg hover:scale-105 hover:from-[#007f4f] transition-all flex items-center gap-3 text-lg font-semibold"
+        >
+          <FaPlus className="h-6 w-6" /> Add Exam
+        </button>
+      </div>
+      {/* Table format for Courses and Exams */}
+      <div className="space-y-10">
+        {localCourses.map((course) => (
+          <div
+            key={course._id}
+            className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <span className="inline-block bg-[#00965f]/10 text-[#00965f] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                {course.category}
+              </span>
+              <span className="ml-auto text-xs text-gray-400">
+                {course.level}
+              </span>
+            </div>
+            <h2
+              className="text-xl font-bold text-gray-800 mb-1 truncate"
+              title={course.title}
+            >
+              {course.title}
+            </h2>
+            <p className="text-gray-500 text-sm mb-4 line-clamp-2">
+              {course.description}
+            </p>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-[#f8fafc]">
+                  <tr>
+                    {course.semesters && course.semesters.length > 0 && (
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Semester
+                      </th>
+                    )}
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Exam Name
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Total Marks
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Passing Marks
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Description
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-100">
+                  {course.semesters && course.semesters.length > 0 ? (
+                    course.semesters.flatMap((semester) =>
+                      (semester.exams && semester.exams.length > 0
+                        ? semester.exams
+                        : [null]
+                      ).map((exam, idx) => (
+                        <tr
+                          key={semester.name + idx}
+                          className="hover:bg-[#f8fafc] transition-colors"
+                        >
+                          <td className="px-4 py-3 align-top">
+                            <span className="inline-block bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                              {semester.name || semester.number}
+                            </span>
+                          </td>
+                          {exam ? (
+                            <>
+                              <td className="px-4 py-3 font-medium text-gray-800">
+                                {exam.name}
+                              </td>
+                              <td className="px-4 py-3 text-gray-600">
+                                {exam.date
+                                  ? new Date(exam.date).toLocaleDateString()
+                                  : "-"}
+                              </td>
+                              <td className="px-4 py-3 text-gray-600">
+                                {exam.totalMarks}
+                              </td>
+                              <td className="px-4 py-3 text-gray-600">
+                                {exam.passingMarks}
+                              </td>
+                              <td className="px-4 py-3 text-gray-500 max-w-xs truncate">
+                                {exam.description}
+                              </td>
+                            </>
+                          ) : (
+                            <td
+                              className="px-4 py-3 text-gray-400 italic"
+                              colSpan={5}
+                            >
+                              No exams for this semester.
+                            </td>
+                          )}
+                        </tr>
+                      ))
+                    )
+                  ) : course.exams && course.exams.length > 0 ? (
+                    course.exams.map((exam, idx) => (
+                      <tr
+                        key={idx}
+                        className="hover:bg-[#f8fafc] transition-colors"
+                      >
+                        <td className="px-4 py-3 font-medium text-gray-800">
+                          {exam.name}
+                        </td>
+                        <td className="px-4 py-3 text-gray-600">
+                          {exam.date
+                            ? new Date(exam.date).toLocaleDateString()
+                            : "-"}
+                        </td>
+                        <td className="px-4 py-3 text-gray-600">
+                          {exam.totalMarks}
+                        </td>
+                        <td className="px-4 py-3 text-gray-600">
+                          {exam.passingMarks}
+                        </td>
+                        <td className="px-4 py-3 text-gray-500 max-w-xs truncate">
+                          {exam.description}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        className="px-4 py-3 text-gray-400 italic"
+                        colSpan={
+                          course.semesters && course.semesters.length > 0
+                            ? 6
+                            : 5
+                        }
+                      >
+                        No exams for this course.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* Add Exam Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 backdrop-blur-md bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-800">Add Exam</h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <FaTimes className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label className="block mb-2 font-medium text-gray-700">
+                    Select Course
+                  </label>
+                  <select
+                    value={selectedCourseId}
+                    onChange={handleCourseChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                    required
+                  >
+                    <option value="">Select a course</option>
+                    {offlineCourses.map((course) => (
+                      <option key={course._id} value={course._id}>
+                        {course.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* If course has semesters, show semester select */}
+                {selectedCourseId &&
+                  offlineCourses.find((c) => c._id === selectedCourseId)
+                    ?.semesters?.length > 0 && (
+                    <div>
+                      <label className="block mb-2 font-medium text-gray-700">
+                        Select Semester
+                      </label>
+                      <select
+                        value={selectedSemester}
+                        onChange={handleSemesterChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                        required
+                      >
+                        <option value="">Select a semester</option>
+                        {offlineCourses
+                          .find((c) => c._id === selectedCourseId)
+                          .semesters.map((semester) => (
+                            <option
+                              key={semester.number || semester.name}
+                              value={semester.number || semester.name}
+                            >
+                              {semester.name || semester.number}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                  )}
+                <div>
+                  <label className="block mb-2 font-medium text-gray-700">
+                    Exam Name
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block mb-2 font-medium text-gray-700">
+                      Exam Date
+                    </label>
+                    <input
+                      type="date"
+                      name="date"
+                      value={formData.date}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 font-medium text-gray-700">
+                      Total Marks
+                    </label>
+                    <input
+                      type="number"
+                      name="totalMarks"
+                      value={formData.totalMarks}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 font-medium text-gray-700">
+                      Passing Marks
+                    </label>
+                    <input
+                      type="number"
+                      name="passingMarks"
+                      value={formData.passingMarks}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block mb-2 font-medium text-gray-700">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows="3"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00965f] focus:border-transparent"
+                  />
+                </div>
+                {error && <p className="text-red-500 text-sm">{error}</p>}
+                {success && <p className="text-green-600 text-sm">{success}</p>}
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-[#00965f] text-white rounded-lg hover:bg-[#007f4f] transition-colors"
+                    disabled={loading}
+                  >
+                    {loading ? "Adding..." : "Add Exam"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Main component with dynamic import and SSR disabled
 const InhouseAdminDashboard = () => {
   const router = useRouter();
@@ -2674,6 +3086,12 @@ const InhouseAdminDashboard = () => {
     setIsVideoPlayerOpen(true);
   };
 
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    toast.success("Logged out successfully!");
+    router.push("/inhouse/admin/login");
+  };
+
   if (!mounted) {
     return null;
   }
@@ -2701,7 +3119,7 @@ const InhouseAdminDashboard = () => {
         <div className="mb-10 flex flex-col items-center">
           <h2 className="text-xl font-bold text-[#164758]">In-House Admin</h2>
         </div>
-        <nav className="flex-1">
+        <nav>
           <ul className="space-y-3">
             <li>
               <button
@@ -2799,14 +3217,27 @@ const InhouseAdminDashboard = () => {
                 Analytics
               </button>
             </li>
+            <li>
+              <button
+                onClick={() => {
+                  setActiveTab("exams");
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium transition-all duration-200 w-full ${
+                  activeTab === "exams"
+                    ? "bg-[#00965f]/10 text-[#00965f] shadow-sm"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <FaCalendarAlt className="h-5 w-5" />
+                Exams
+              </button>
+            </li>
           </ul>
         </nav>
-        <div className="mt-10">
+        <div>
           <button
-            onClick={() => {
-              handleNavigation("/logout");
-              setIsMobileMenuOpen(false);
-            }}
+            onClick={handleLogout}
             className="flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-red-600 hover:bg-red-50 transition-all duration-200 w-full"
           >
             <FaSignOutAlt className="h-5 w-5" /> Logout
@@ -3637,6 +4068,13 @@ const InhouseAdminDashboard = () => {
                     We're working on bringing you detailed analytics
                   </p>
                 </div>
+              )}
+
+              {activeTab === "exams" && (
+                <ExamsSection
+                  offlineCourses={offlineCourses}
+                  dispatch={dispatch}
+                />
               )}
             </>
           )}

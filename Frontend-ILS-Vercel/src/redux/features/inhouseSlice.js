@@ -196,6 +196,23 @@ export const payFee = createAsyncThunk(
   }
 );
 
+// Add Exam (Admin)
+export const addExam = createAsyncThunk(
+  "inhouse/addExam",
+  async (examData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/add-exam`, examData, {
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to add exam" }
+      );
+    }
+  }
+);
+
 const initialState = {
   offlineCourses: [],
   offlineStudents: [],
@@ -414,6 +431,19 @@ const inhouseSlice = createSlice({
       .addCase(payFee.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.error || "Failed to process fee payment";
+      })
+      // Add Exam (Admin)
+      .addCase(addExam.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addExam.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message || "Exam added successfully";
+      })
+      .addCase(addExam.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message || "Failed to add exam";
       });
   },
 });
