@@ -1,9 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
-
 const isBrowser = typeof window !== "undefined";
-
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 // Get All Users
 export const getAllUsers = createAsyncThunk(
