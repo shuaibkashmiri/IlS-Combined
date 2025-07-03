@@ -103,7 +103,7 @@ const AuthModal = ({
   const handleGoogleLogin = async () => {
     try {
       const result = await dispatch(googleLogin()).unwrap();
-      toast.success("Logged in successfully with Google!");
+      // toast.success("Logged in successfully with Google!");
       toggleModal();
 
       if (!fromCategoryPage && result.tempdata?.length >= 1) {
