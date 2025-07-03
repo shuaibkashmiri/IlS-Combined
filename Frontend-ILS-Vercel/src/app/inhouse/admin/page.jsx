@@ -12,6 +12,7 @@ import {
   giveDiscount,
   payFee,
   addExam,
+  changeExamStatus,
 } from "../../../redux/features/inhouseSlice";
 import {
   FaBook,
@@ -2219,7 +2220,7 @@ const StudentsSection = ({
       )}
       {showSuccessModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-white rounded-xl shadow-lg p-8 max-w-sm w-full flex flex-col items-center">
+          <div className="bg-white rounded-xl shadow-lg p-8 max-w-2xl w-full flex flex-col items-center">
             <h2 className="text-2xl font-bold text-green-600 mb-4">
               Student added successfully!
             </h2>
@@ -2237,7 +2238,7 @@ const StudentsSection = ({
 };
 
 // Exams Component
-const ExamsSection = ({ offlineCourses, dispatch }) => {
+const ExamsSection = ({ offlineCourses, offlineStudents, dispatch }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
@@ -2252,6 +2253,63 @@ const ExamsSection = ({ offlineCourses, dispatch }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [localCourses, setLocalCourses] = useState(offlineCourses);
+
+  // Modal state for showing students for an exam
+  const [showStudentsModal, setShowStudentsModal] = useState(false);
+  const [studentsForExam, setStudentsForExam] = useState([]);
+  const [selectedExamInfo, setSelectedExamInfo] = useState(null);
+
+  // --- State and handlers for change exam status modal ---
+  const [changeStatusModal, setChangeStatusModal] = useState({ open: false });
+
+  const handleOpenChangeStatusModal = (student) => {
+    setChangeStatusModal({
+      open: true,
+      student,
+      status: "",
+      marksObtained: "",
+      error: null,
+      loading: false,
+    });
+  };
+
+  const handleChangeStatusSubmit = async (e) => {
+    e.preventDefault();
+    // Validation for required fields
+    if (
+      !changeStatusModal.student?._id ||
+      !selectedExamInfo?.courseId ||
+      !selectedExamInfo?.examId ||
+      !changeStatusModal.status
+    ) {
+      setChangeStatusModal((modal) => ({
+        ...modal,
+        error: "Student ID, Course ID, Exam ID, and status are required",
+        loading: false,
+      }));
+      return;
+    }
+    setChangeStatusModal((modal) => ({ ...modal, loading: true, error: null }));
+    try {
+      await dispatch(
+        changeExamStatus({
+          studentId: changeStatusModal.student._id,
+          courseId: selectedExamInfo.courseId,
+          examId: selectedExamInfo.examId,
+          status: changeStatusModal.status,
+          marksObtained: changeStatusModal.marksObtained,
+        })
+      ).unwrap();
+      setChangeStatusModal({ open: false });
+      // Optionally, refresh students list or show a toast
+    } catch (err) {
+      setChangeStatusModal((modal) => ({
+        ...modal,
+        error: err?.error || "Failed to update status",
+        loading: false,
+      }));
+    }
+  };
 
   useEffect(() => {
     setLocalCourses(offlineCourses);
@@ -2347,6 +2405,24 @@ const ExamsSection = ({ offlineCourses, dispatch }) => {
     }
   };
 
+  // Handler to show students for a particular exam
+  const handleShowStudents = (course, exam, semester) => {
+    // Find students enrolled in this course (and semester if needed)
+    let students = offlineStudents.filter((student) =>
+      student.myCourses?.some((mc) => mc.course?._id === course._id)
+    );
+    // Optionally, filter by semester if needed (not implemented here, as exam is at course/semester level)
+    setStudentsForExam(students);
+    setSelectedExamInfo({
+      courseTitle: course.title,
+      courseId: course._id,
+      examName: exam.name,
+      examId: exam._id || exam.name,
+      semesterName: semester?.name,
+    });
+    setShowStudentsModal(true);
+  };
+
   return (
     <div className="space-y-10">
       <div className="flex items-center justify-between mb-6">
@@ -2408,6 +2484,9 @@ const ExamsSection = ({ offlineCourses, dispatch }) => {
                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Description
                     </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100">
@@ -2445,6 +2524,16 @@ const ExamsSection = ({ offlineCourses, dispatch }) => {
                               <td className="px-4 py-3 text-gray-500 max-w-xs truncate">
                                 {exam.description}
                               </td>
+                              <td className="px-4 py-3">
+                                <button
+                                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs"
+                                  onClick={() =>
+                                    handleShowStudents(course, exam, semester)
+                                  }
+                                >
+                                  Show Students
+                                </button>
+                              </td>
                             </>
                           ) : (
                             <td
@@ -2479,6 +2568,16 @@ const ExamsSection = ({ offlineCourses, dispatch }) => {
                         </td>
                         <td className="px-4 py-3 text-gray-500 max-w-xs truncate">
                           {exam.description}
+                        </td>
+                        <td className="px-4 py-3">
+                          <button
+                            className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs"
+                            onClick={() =>
+                              handleShowStudents(course, exam, null)
+                            }
+                          >
+                            Show Students
+                          </button>
                         </td>
                       </tr>
                     ))
@@ -2639,6 +2738,161 @@ const ExamsSection = ({ offlineCourses, dispatch }) => {
                 </div>
               </form>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal to show students for selected exam */}
+      {showStudentsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/10">
+          <div className="bg-white rounded-xl shadow-lg p-8 max-w-2xl w-full">
+            <h2 className="text-xl font-bold mb-4">
+              Students for {selectedExamInfo.examName} (
+              {selectedExamInfo.courseTitle}
+              {selectedExamInfo.semesterName
+                ? ` - ${selectedExamInfo.semesterName}`
+                : ""}
+              )
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      ID
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-100">
+                  {studentsForExam.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="py-2 text-gray-500 text-center"
+                      >
+                        No students found.
+                      </td>
+                    </tr>
+                  ) : (
+                    studentsForExam.map((student) => (
+                      <tr key={student._id}>
+                        <td className="px-4 py-2 font-mono text-xs text-gray-400">
+                          {student._id}
+                        </td>
+                        <td className="px-4 py-2">{student.name}</td>
+                        <td className="px-4 py-2">{student.email}</td>
+                        <td className="px-4 py-2">
+                          <button
+                            className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 border border-green-200"
+                            onClick={() => handleOpenChangeStatusModal(student)}
+                          >
+                            Change Exam Status
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <button
+              className="mt-6 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+              onClick={() => setShowStudentsModal(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+      {/* Change Exam Status Modal - always render as sibling, not inside return */}
+      {changeStatusModal.open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/10">
+          <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full">
+            <h2 className="text-lg font-bold mb-4">Change Exam Status</h2>
+            <form onSubmit={handleChangeStatusSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Student
+                </label>
+                <div className="font-mono text-xs text-gray-400">
+                  {changeStatusModal.student?._id}
+                </div>
+                <div>
+                  {changeStatusModal.student?.name} (
+                  {changeStatusModal.student?.email})
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Status
+                </label>
+                <select
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  value={changeStatusModal.status}
+                  onChange={(e) =>
+                    setChangeStatusModal((modal) => ({
+                      ...modal,
+                      status: e.target.value,
+                    }))
+                  }
+                  required
+                >
+                  <option value="">Select status</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Appeared">Appeared</option>
+                  <option value="Passed">Passed</option>
+                  <option value="Failed">Failed</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Marks Obtained
+                </label>
+                <input
+                  type="number"
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  value={changeStatusModal.marksObtained}
+                  onChange={(e) =>
+                    setChangeStatusModal((modal) => ({
+                      ...modal,
+                      marksObtained: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter marks (optional)"
+                />
+              </div>
+              {changeStatusModal.error && (
+                <div className="text-red-600 text-sm">
+                  {changeStatusModal.error}
+                </div>
+              )}
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                  onClick={() => setChangeStatusModal({ open: false })}
+                  disabled={changeStatusModal.loading}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-60"
+                  disabled={changeStatusModal.loading}
+                >
+                  {changeStatusModal.loading ? "Saving..." : "Save"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -4073,6 +4327,7 @@ const InhouseAdminDashboard = () => {
               {activeTab === "exams" && (
                 <ExamsSection
                   offlineCourses={offlineCourses}
+                  offlineStudents={offlineStudents}
                   dispatch={dispatch}
                 />
               )}

@@ -55,6 +55,47 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+// Verify User OTP (Email)
+export const verifyUserOtp = createAsyncThunk(
+  "user/verifyUserOtp",
+  async ({ email, otp }, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/api/auth/verify-otp`, {
+        email,
+        otp,
+      });
+      await dispatch(getUserDetails());
+      if (isBrowser)
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "OTP verification failed" }
+      );
+    }
+  }
+);
+
+// Resend User Verification
+export const resendUserVerification = createAsyncThunk(
+  "user/resendUserVerification",
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/api/auth/resend-verification`,
+        {
+          email,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to resend OTP" }
+      );
+    }
+  }
+);
+
 // Login User with getUserDetails call
 export const loginUser = createAsyncThunk(
   "user/login",
@@ -180,7 +221,7 @@ export const initiateTeachingApplication = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${BASE_URL}/api/teach/initiate`,
+        `${BASE_URL}/api/auth/teach/initiate`,
         formData
       );
       return response.data;
@@ -198,7 +239,7 @@ export const verifyTeachingOTP = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${BASE_URL}/api/teach/verify-otp`,
+        `${BASE_URL}/api/auth/teach/verify-otp`,
         formData
       );
       return response.data;
@@ -216,7 +257,7 @@ export const completeTeachingApplication = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${BASE_URL}/api/teach/complete`,
+        `${BASE_URL}/api/auth/teach/complete`,
         formData,
         {
           headers: {
@@ -548,6 +589,30 @@ const userSlice = createSlice({
       .addCase(rejectInstructor.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Failed to reject instructor";
+      })
+      .addCase(verifyUserOtp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyUserOtp.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message || "OTP verified successfully";
+      })
+      .addCase(verifyUserOtp.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "OTP verification failed";
+      })
+      .addCase(resendUserVerification.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resendUserVerification.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message || "OTP resent successfully";
+      })
+      .addCase(resendUserVerification.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Failed to resend OTP";
       });
   },
 });

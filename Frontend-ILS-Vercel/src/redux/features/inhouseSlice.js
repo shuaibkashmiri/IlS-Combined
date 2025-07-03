@@ -213,6 +213,28 @@ export const addExam = createAsyncThunk(
   }
 );
 
+// Change Exam Status (Admin)
+export const changeExamStatus = createAsyncThunk(
+  "inhouse/changeExamStatus",
+  async (
+    { studentId, courseId, examId, status, marksObtained },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/change-exam-status`,
+        { studentId, courseId, examId, status, marksObtained },
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { error: "Failed to change exam status" }
+      );
+    }
+  }
+);
+
 const initialState = {
   offlineCourses: [],
   offlineStudents: [],
@@ -444,6 +466,30 @@ const inhouseSlice = createSlice({
       .addCase(addExam.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message || "Failed to add exam";
+      })
+      // Change Exam Status (Admin)
+      .addCase(changeExamStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(changeExamStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message =
+          action.payload.message || "Exam status changed successfully";
+        // Update the student in offlineStudents
+        const updatedStudent = action.payload.student;
+        if (updatedStudent && state.offlineStudents) {
+          const idx = state.offlineStudents.findIndex(
+            (s) => s._id === updatedStudent._id
+          );
+          if (idx !== -1) {
+            state.offlineStudents[idx] = updatedStudent;
+          }
+        }
+      })
+      .addCase(changeExamStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.error || "Failed to change exam status";
       });
   },
 });

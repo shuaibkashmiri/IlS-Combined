@@ -49,10 +49,12 @@ const DemoVideos = () => {
   useEffect(() => {
     if (selectedCourse?.course?.videos?.length > 0) {
       const firstVideo = selectedCourse.course.videos[0];
-      const embedUrl = getYouTubeEmbedUrl(firstVideo.videoUrl);
+      const firstVideoUrl = isYouTubeUrl(firstVideo.videoUrl)
+        ? getYouTubeEmbedUrl(firstVideo.videoUrl)
+        : firstVideo.videoUrl;
       setSelectedVideo({
         ...firstVideo,
-        videoUrl: embedUrl,
+        videoUrl: firstVideoUrl,
         thumbnail: firstVideo.thumbnail || selectedCourse.course.thumbnail,
       });
       setSelectedTitle(firstVideo.title);
@@ -85,10 +87,12 @@ const DemoVideos = () => {
   };
 
   const handleVideoSelect = (video, index) => {
-    const embedUrl = getYouTubeEmbedUrl(video.videoUrl);
+    const selectedVideoUrl = isYouTubeUrl(video.videoUrl)
+      ? getYouTubeEmbedUrl(video.videoUrl)
+      : video.videoUrl;
     setSelectedVideo({
       ...video,
-      videoUrl: embedUrl,
+      videoUrl: selectedVideoUrl,
       thumbnail: video.thumbnail || selectedCourse.course.thumbnail,
     });
     setCurrentVideoIndex(index);
@@ -133,6 +137,11 @@ const DemoVideos = () => {
     setTimeout(() => {
       paymentSectionRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 100);
+  };
+
+  // Helper to check if a URL is a YouTube link
+  const isYouTubeUrl = (url) => {
+    return url.includes("youtube.com") || url.includes("youtu.be");
   };
 
   if (fetchError) {
@@ -322,14 +331,25 @@ const DemoVideos = () => {
                 {selectedVideo ? (
                   <div>
                     <div className="relative w-full pt-[56.25%]">
-                      <iframe
-                        className="absolute top-0 left-0 w-full h-full"
-                        src={selectedVideo.videoUrl}
-                        title={selectedVideo.title}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      ></iframe>
+                      {isYouTubeUrl(selectedVideo.videoUrl) ? (
+                        <iframe
+                          className="absolute top-0 left-0 w-full h-full"
+                          src={selectedVideo.videoUrl}
+                          title={selectedVideo.title}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      ) : (
+                        <video
+                          className="absolute top-0 left-0 w-full h-full"
+                          src={selectedVideo.videoUrl}
+                          controls
+                          poster={selectedVideo.thumbnail}
+                        >
+                          Your browser does not support the video tag.
+                        </video>
+                      )}
                     </div>
 
                     {/* Video Info */}
