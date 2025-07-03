@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   registerUser,
@@ -176,6 +176,17 @@ const AuthModal = ({
       toast.error(error.message || "Failed to resend OTP");
     }
   };
+
+  useEffect(() => {
+    if (showModal) {
+      setStep("form");
+      setIsLogin(true);
+      setFormData({ fullname: "", email: "", password: "" });
+      setFormErrors({});
+      setOtp("");
+      setPendingUser({ email: "", password: "" });
+    }
+  }, [showModal]);
 
   if (!showModal) return null;
 
